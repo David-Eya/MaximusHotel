@@ -332,7 +332,8 @@
                 userData.userid = userId;
                 const resetPassword = document.getElementById('resetpassword').value;
                 if (resetPassword) {
-                    userData.resetpassword = resetPassword;
+                    const auth = new Auth();
+                    userData.resetpassword = auth.hashPassword(resetPassword);
                 }
                 const result = await adminAPI.updateUser(userData);
                 if (result.success) {
