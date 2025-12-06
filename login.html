@@ -219,7 +219,7 @@
 </head>
 
 <body>
-      <button class="close-button" style="color: white !important;" onclick="location.href='/index.html'">
+      <button class="close-button" style="color: white !important;" onclick="location.href='/MaximusHotel/index.html'">
     <i class="fas fa-arrow-left"></i> Back
   </button>
   
@@ -416,14 +416,14 @@
         if (result.success) {
           const user = result.user;
           let welcomeMessage = 'Welcome Client';
-          let redirectUrl = 'index.html';
+          let redirectUrl = '/MaximusHotel/index.html';
           
           if (user.usertype === 'Admin') {
             welcomeMessage = 'Welcome Admin';
-            redirectUrl = '/admin/index.html';
+            redirectUrl = '/MaximusHotel/views/index.html';
           } else if (user.usertype === 'Incharge') {
             welcomeMessage = 'Welcome Incharge';
-            redirectUrl = '/admin/index.html';
+            redirectUrl = '/MaximusHotel/views/index.html';
           }
           
           Swal.fire({
