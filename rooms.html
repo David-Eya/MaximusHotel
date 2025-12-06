@@ -98,6 +98,7 @@
 <script src="/MaximusHotel/js/jquery.slicknav.js"></script>
 <script src="/MaximusHotel/js/owl.carousel.min.js"></script>
 <script src="/MaximusHotel/js/main.js"></script>
+<script src="/MaximusHotel/js/config.js"></script>
 <script src="/MaximusHotel/js/auth.js"></script>
 <script src="/MaximusHotel/js/pages.js"></script>
 <script>
@@ -129,7 +130,9 @@
         }
         
         try {
-            let apiUrl = `/api/pages/get_rooms?page=${page}&items_per_page=6`;
+            // Use CONFIG to get the API base URL
+            const apiBaseUrl = typeof CONFIG !== 'undefined' && CONFIG.getApiBaseUrl ? CONFIG.getApiBaseUrl() : 'https://hotelmaximus.bytevortexz.com/api';
+            let apiUrl = `${apiBaseUrl}/pages/get_rooms?page=${page}&items_per_page=6`;
             if (search) apiUrl += `&search=${encodeURIComponent(search)}`;
             if (checkin) apiUrl += `&checkin=${encodeURIComponent(checkin)}`;
             if (checkout) apiUrl += `&checkout=${encodeURIComponent(checkout)}`;
