@@ -104,7 +104,6 @@
 <script>
     // Navigation update is now handled by layout-loader.js after layouts are loaded
     
-    // Wait for CONFIG to be loaded
     function waitForConfig(maxWait = 2000) {
         return new Promise((resolve) => {
             const startTime = Date.now();
@@ -148,7 +147,6 @@
         }
         
         try {
-            // Wait for CONFIG to be available
             const apiBaseUrl = await waitForConfig();
             
             let apiUrl = `${apiBaseUrl}/pages/get_rooms?page=${page}&items_per_page=6`;
@@ -190,7 +188,6 @@
                         maximumFractionDigits: 2
                     });
                     
-                    // Ensure image path is valid - use backend URL
                     const roomImage = (room.image && room.image.trim()) ? room.image.trim() : 'default.jpg';
                     const imagePath = typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl 
                         ? CONFIG.getRoomImageUrl(roomImage)

@@ -355,7 +355,6 @@
 
     // Load user profile data
     async function loadProfile() {
-        // Ensure auth is available
         if (typeof auth === 'undefined') {
             console.error('Auth object not available');
             return;
@@ -381,7 +380,6 @@
                 console.log('Profile data loaded:', responseData.user);
                 populateProfileForm(responseData.user);
                 populateProfileInfo(responseData.user);
-                // Update profile image with a small delay to ensure DOM is ready
                 setTimeout(() => {
                     updateProfileImage(responseData.user.image);
                 }, 100);
@@ -414,7 +412,6 @@
         document.getElementById('gender').value = user.gender || '';
     }
 
-    // Update profile image
     function updateProfileImage(imageName) {
         const container = document.getElementById('profileImageContainer');
         if (!container) {
@@ -422,14 +419,12 @@
             return;
         }
 
-        // Build image URL - use backend URL for profile images
         let imageUrl;
         let defaultImageUrl;
         if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
             imageUrl = CONFIG.getProfileImageUrl(imageName);
             defaultImageUrl = CONFIG.getProfileImageUrl('default.jpg');
         } else {
-            // Fallback to backend URL
             const backendUrl = 'https://hotelmaximus.bytevortexz.com';
             imageUrl = imageName && imageName.trim() && imageName !== 'default.jpg'
                 ? `${backendUrl}/profile_img/${imageName}`
@@ -444,7 +439,7 @@
         container.style.backgroundImage = `url('${imageUrl}')`;
         container.style.backgroundSize = 'cover';
         container.style.backgroundPosition = 'center';
-        container.style.backgroundColor = '#f0f0f0'; // Fallback background color
+        container.style.backgroundColor = '#f0f0f0';
 
         // Test if image loads
         const img = new Image();
@@ -541,7 +536,6 @@
                     user.image = imageName;
                     auth.setUser(user);
                 }
-                // Update navigation profile icon
                 if (typeof updateNavigation === 'function') {
                     await updateNavigation();
                 }
@@ -595,7 +589,6 @@
                         auth.setUser(user);
                     }
                 }
-                // Update navigation profile icon
                 if (typeof updateNavigation === 'function') {
                     await updateNavigation();
                 }
@@ -717,7 +710,6 @@
 
     // Load profile on page load
     document.addEventListener('DOMContentLoaded', async () => {
-        // Wait for auth.js to be loaded
         if (typeof auth === 'undefined') {
             // Wait a bit and try again
             setTimeout(async () => {

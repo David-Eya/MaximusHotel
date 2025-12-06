@@ -193,7 +193,6 @@
                     displayRoomDetails(currentRoom);
                     setupBookingForm(currentRoom);
                     
-                    // Check if availability was already checked
                     const available = getUrlParameter('available');
                     const checkin = getUrlParameter('checkin');
                     const checkout = getUrlParameter('checkout');
@@ -263,7 +262,6 @@
         // Display room details
         function displayRoomDetails(room) {
             const container = document.getElementById('roomDetailsContainer');
-            // Use backend URL for room images
             let imagePath;
             let defaultImagePath;
             if (typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl) {

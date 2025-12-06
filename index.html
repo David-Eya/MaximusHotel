@@ -229,7 +229,6 @@
     // Load room types
     async function loadRoomTypes() {
         try {
-            // Use CONFIG to get the API base URL
             const apiBaseUrl = typeof CONFIG !== 'undefined' && CONFIG.getApiBaseUrl ? CONFIG.getApiBaseUrl() : 'https://hotelmaximus.bytevortexz.com/api';
             const response = await fetch(`${apiBaseUrl}/pages/get_room_types`);
             const result = await response.json();
@@ -248,7 +247,6 @@
                         maximumFractionDigits: 2
                     });
                     
-                    // Ensure image path is valid - use backend URL
                     const roomImage = (room.image && room.image.trim()) ? room.image.trim() : 'default.jpg';
                     const imagePath = typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl 
                         ? CONFIG.getRoomImageUrl(roomImage)
@@ -337,7 +335,6 @@
         // Load room types
         loadRoomTypes();
         
-        // If user just logged in, trigger navigation update after a delay
         if (sessionStorage.getItem('justLoggedIn')) {
             setTimeout(() => {
                 if (typeof updateNavigation === 'function') {
