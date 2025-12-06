@@ -56,7 +56,7 @@
                     <span id="adminUserType" class="user-type">Admin</span>
                 </div>
                 <a href="/MaximusHotel/views/profile.html" style="text-decoration: none; color: inherit;">
-                    <img id="adminProfileImage" src="/MaximusHotel/profile_img/default.jpg" alt="Admin" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; cursor: pointer;">
+                    <img id="adminProfileImage" src="https://hotelmaximus.bytevortexz.com/profile_img/default.jpg" alt="Admin" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; cursor: pointer;">
                     <i class="fas fa-user-circle" id="adminProfileIcon" style="font-size: 2rem; cursor: pointer;"></i>
                 </a>
             </div>
@@ -259,7 +259,17 @@
         }
 
         function updateProfileImage(imageName) {
-            const imageUrl = `/MaximusHotel/profile_img/${imageName || 'default.jpg'}`;
+            // Use CONFIG to get backend URL for profile images
+            let imageUrl;
+            if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
+                imageUrl = CONFIG.getProfileImageUrl(imageName);
+            } else {
+                // Fallback to backend URL
+                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                imageUrl = imageName && imageName.trim() && imageName !== 'default.jpg'
+                    ? `${backendUrl}/profile_img/${imageName}`
+                    : `${backendUrl}/profile_img/default.jpg`;
+            }
             document.getElementById('profileImageContainer').style.backgroundImage = `url('${imageUrl}')`;
         }
 
@@ -515,15 +525,20 @@
             const profileImage = document.getElementById('adminProfileImage');
             const profileIcon = document.getElementById('adminProfileIcon');
             
-            if (userData && userData.image) {
-                profileImage.src = `/MaximusHotel/profile_img/${userData.image}`;
-                profileImage.style.display = 'block';
-                if (profileIcon) profileIcon.style.display = 'none';
+            // Use CONFIG to get backend URL for profile images
+            let imageUrl;
+            if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
+                imageUrl = CONFIG.getProfileImageUrl(userData ? userData.image : null);
             } else {
-                profileImage.src = '/MaximusHotel/profile_img/default.jpg';
-                profileImage.style.display = 'block';
-                if (profileIcon) profileIcon.style.display = 'none';
+                // Fallback to backend URL
+                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                imageUrl = (userData && userData.image && userData.image.trim() && userData.image !== 'default.jpg')
+                    ? `${backendUrl}/profile_img/${userData.image}`
+                    : `${backendUrl}/profile_img/default.jpg`;
             }
+            profileImage.src = imageUrl;
+            profileImage.style.display = 'block';
+            if (profileIcon) profileIcon.style.display = 'none';
         }
 
         // Update top bar user info (name, usertype, image)
@@ -575,6 +590,7 @@
     </script>
 </body>
 </html>
+
 
 
 

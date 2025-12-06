@@ -340,15 +340,20 @@ const LayoutLoader = {
         const profileIcon = document.getElementById(iconId);
         
         if (profileImage && profileIcon) {
-            if (userData.image && userData.image.trim()) {
-                profileImage.src = `/MaximusHotel/profile_img/${userData.image}`;
-                profileImage.style.display = 'block';
-                profileIcon.style.display = 'none';
+            // Use CONFIG to get backend URL for profile images
+            let imageUrl;
+            if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
+                imageUrl = CONFIG.getProfileImageUrl(userData.image);
             } else {
-                profileImage.src = '/MaximusHotel/profile_img/default.jpg';
-                profileImage.style.display = 'block';
-                profileIcon.style.display = 'none';
+                // Fallback to backend URL
+                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                imageUrl = userData.image && userData.image.trim() 
+                    ? `${backendUrl}/profile_img/${userData.image}`
+                    : `${backendUrl}/profile_img/default.jpg`;
             }
+            profileImage.src = imageUrl;
+            profileImage.style.display = 'block';
+            profileIcon.style.display = 'none';
             
             // Add error handler to fallback to icon if image fails to load
             profileImage.onerror = function() {
@@ -371,15 +376,20 @@ const LayoutLoader = {
         
         // Update profile image/icon
         if (profileImage && profileIcon) {
-            if (userData.image && userData.image.trim()) {
-                profileImage.src = `/MaximusHotel/profile_img/${userData.image}`;
-                profileImage.style.display = 'block';
-                profileIcon.style.display = 'none';
+            // Use CONFIG to get backend URL for profile images
+            let imageUrl;
+            if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
+                imageUrl = CONFIG.getProfileImageUrl(userData.image);
             } else {
-                profileImage.src = '/MaximusHotel/profile_img/default.jpg';
-                profileImage.style.display = 'block';
-                profileIcon.style.display = 'none';
+                // Fallback to backend URL
+                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                imageUrl = userData.image && userData.image.trim() 
+                    ? `${backendUrl}/profile_img/${userData.image}`
+                    : `${backendUrl}/profile_img/default.jpg`;
             }
+            profileImage.src = imageUrl;
+            profileImage.style.display = 'block';
+            profileIcon.style.display = 'none';
             
             // Add error handler to fallback to icon if image fails to load
             profileImage.onerror = function() {

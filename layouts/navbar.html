@@ -29,7 +29,7 @@
                                 <li><a href="/MaximusHotel/about-us.html">About Us</a></li>
                                 <li><a href="/MaximusHotel/contact.html">Contact</a></li>
                                 <li id="navProfile" style="display: none;"><a href="#!" style="display: inline-block; padding: 27px 0; margin-right: 42px; line-height: 16px; vertical-align: middle;">
-                                    <img id="navProfileImage" src="/MaximusHotel/profile_img/default.jpg" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; vertical-align: middle; margin: 0; padding: 0;">
+                                    <img id="navProfileImage" src="https://hotelmaximus.bytevortexz.com/profile_img/default.jpg" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; vertical-align: middle; margin: 0; padding: 0;">
                                     <i class="fa fa-user-circle" id="navProfileIcon" style="font-size: 1.8rem; vertical-align: middle; line-height: 16px; margin: 0; padding: 0;"></i>
                                 </a>
                                     <ul class="dropdown">
@@ -63,9 +63,11 @@
                                                     
                                                     // Preload image for instant display
                                                     const img = new Image();
+                                                    // Use backend URL for profile images
+                                                    const backendUrl = 'https://hotelmaximus.bytevortexz.com';
                                                     const imagePath = (userData.image && userData.image.trim() && userData.image !== 'default.jpg') 
-                                                        ? `/profile_img/${userData.image}` 
-                                                        : '/MaximusHotel/profile_img/default.jpg';
+                                                        ? `${backendUrl}/profile_img/${userData.image}` 
+                                                        : `${backendUrl}/profile_img/default.jpg`;
                                                     
                                                     img.onload = function() {
                                                         navProfileImage.src = imagePath;
@@ -73,7 +75,7 @@
                                                     };
                                                     img.onerror = function() {
                                                         // Fallback to default if image fails
-                                                        navProfileImage.src = '/MaximusHotel/profile_img/default.jpg';
+                                                        navProfileImage.src = `${backendUrl}/profile_img/default.jpg`;
                                                         navProfileImage.style.display = 'block';
                                                     };
                                                     img.src = imagePath;
