@@ -5,36 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - Admin Panel</title>
     <base href="/MaximusHotel/">
-    <link rel="icon" href="/img/favicon.png" />
+    <link rel="icon" href="img/favicon.png" />
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="css/admin.css">
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="profile-page">
     <div class="sidebar">
         <div class="sidebar-header">
-            <h4><img src="/img/favicon.png" alt="M" class="logo-letter">aximus Hotel</h4>
+            <h4><img src="img/favicon.png" alt="M" class="logo-letter">aximus Hotel</h4>
         </div>
         <nav class="sidebar-nav">
-            <a href="/admin/index.html" class="nav-item">
+            <a href="views/index.html" class="nav-item">
                 <i class="fas fa-chart-line"></i> Dashboard
             </a>
-            <a href="/admin/users.html" class="nav-item" id="navUsers" style="display: none;">
+            <a href="views/users.html" class="nav-item" id="navUsers" style="display: none;">
                 <i class="fas fa-users"></i> Users
             </a>
-            <a href="/admin/bookings.html" class="nav-item">
+            <a href="views/bookings.html" class="nav-item">
                 <i class="fas fa-calendar-check"></i> Bookings
             </a>
-            <a href="/admin/rooms.html" class="nav-item">
+            <a href="views/rooms.html" class="nav-item">
                 <i class="fas fa-bed"></i> Rooms
             </a>
-            <a href="/admin/room-categories.html" class="nav-item" id="navRoomCategories" style="display: none;">
+            <a href="views/room-categories.html" class="nav-item" id="navRoomCategories" style="display: none;">
                 <i class="fas fa-tags"></i> Room Categories
             </a>
-            <a href="/admin/profile.html" class="nav-item active">
+            <a href="views/profile.html" class="nav-item active">
                 <i class="fas fa-user"></i> My Profile
             </a>
             <a href="#" id="adminLogout" class="nav-item">
@@ -56,8 +56,8 @@
                     <span id="adminUserName">Admin</span>
                     <span id="adminUserType" class="user-type">Admin</span>
                 </div>
-                <a href="/admin/profile.html" style="text-decoration: none; color: inherit;">
-                    <img id="adminProfileImage" src="/profile_img/default.jpg" alt="Admin" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; cursor: pointer;">
+                <a href="views/profile.html" style="text-decoration: none; color: inherit;">
+                    <img id="adminProfileImage" src="profile_img/default.jpg" alt="Admin" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; cursor: pointer;">
                     <i class="fas fa-user-circle" id="adminProfileIcon" style="font-size: 2rem; cursor: pointer;"></i>
                 </a>
             </div>
@@ -182,8 +182,8 @@
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/admin-auth.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-auth.js"></script>
     <script>
         const Toast = Swal.mixin({
             toast: true,
@@ -575,4 +575,6 @@
     </script>
 </body>
 </html>
+
+
 
