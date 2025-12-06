@@ -166,7 +166,6 @@ const LayoutLoader = {
                                         this.updateProfileImage(result.user);
                 } else {
                     console.warn('navProfile element not found - will retry');
-                    // Retry once more after a delay
                     setTimeout(() => {
                         const retryProfileNav = document.getElementById('navProfile');
                         if (retryProfileNav) {
@@ -186,7 +185,6 @@ const LayoutLoader = {
                                         this.updateProfileImage(result.user, true);
                 } else {
                     console.warn('mobileProfile element not found - will retry');
-                    // Retry once more after a delay
                     setTimeout(() => {
                         const retryMobileProfileNav = document.getElementById('mobileProfile');
                         if (retryMobileProfileNav) {
@@ -356,8 +354,6 @@ const LayoutLoader = {
      * Load all layouts
      */
     async loadLayouts() {
-        // Note: Head content (CSS) should be in HTML file directly for proper rendering
-        // Only load navigation and footer dynamically
         
                 await this.loadLayout('mobilenav.html', 'layout-mobilenav-placeholder');
         
@@ -367,7 +363,6 @@ const LayoutLoader = {
         
                 this.setActiveNav();
         
-                        // If user just logged in, wait a bit longer and retry
         const justLoggedIn = sessionStorage.getItem('justLoggedIn');
         const delay = justLoggedIn ? 800 : 500;
         

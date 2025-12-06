@@ -29,7 +29,6 @@ class AdminAuth {
         const verified = await this.auth.verifyToken();
         if (!verified || !verified.success || !verified.user || 
             (verified.user.usertype !== 'Admin' && verified.user.usertype !== 'Incharge')) {
-            // Token invalid or user is not Admin/Incharge
             this.auth.removeToken();
             Swal.fire({
                 icon: 'error',

@@ -195,7 +195,6 @@
                 document.getElementById('services').value = category.services || '';
                 
                 if (category.image) {
-                    // Use backend URL for room images
                     const imageUrl = typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl 
                         ? CONFIG.getRoomImageUrl(category.image)
                         : `https://hotelmaximus.bytevortexz.com/img/room/${category.image}`;
@@ -223,7 +222,6 @@
             
             // Cleanup function - wait for Bootstrap's animation to complete
             const performCleanup = () => {
-                // Check if modal is actually hidden (no show class and not in transition)
                 const isModalHidden = !modalElement.classList.contains('show') && 
                                      modalElement.style.display === 'none' || 
                                      !modalElement.classList.contains('show');
@@ -249,7 +247,6 @@
                 }
             };
             
-            // Wait for Bootstrap's fade animation (usually 150ms) plus a buffer
             setTimeout(performCleanup, 350);
             
             // Also listen for the hidden event (fires after animation completes)
@@ -553,12 +550,10 @@
             const profileImage = document.getElementById('adminProfileImage');
             const profileIcon = document.getElementById('adminProfileIcon');
             
-            // Use CONFIG to get backend URL for profile images
             let imageUrl;
             if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
                 imageUrl = CONFIG.getProfileImageUrl(userData ? userData.image : null);
             } else {
-                // Fallback to backend URL
                 const backendUrl = 'https://hotelmaximus.bytevortexz.com';
                 imageUrl = (userData && userData.image && userData.image.trim() && userData.image !== 'default.jpg')
                     ? `${backendUrl}/profile_img/${userData.image}`
@@ -569,7 +564,6 @@
             if (profileIcon) profileIcon.style.display = 'none';
         }
 
-        // Check if user is incharge and redirect
         function checkInchargeAccess() {
             const userData = new Auth().getUser();
             if (userData && userData.usertype === 'Incharge') {
