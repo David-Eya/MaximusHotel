@@ -262,10 +262,10 @@
         // Display room details
         function displayRoomDetails(room) {
             const container = document.getElementById('roomDetailsContainer');
-            const imagePath = room.image ? `/img/room/${room.image}` : '/img/room/default.jpg';
+            const imagePath = room.image ? `/MaximusHotel/img/room/${room.image}` : '/MaximusHotel/img/room/default.jpg';
             
             container.innerHTML = `
-                <img src="${imagePath}" alt="${room.category_name || 'Room'}" onerror="this.src='/img/room/default.jpg'">
+                <img src="${imagePath}" alt="${room.category_name || 'Room'}" onerror="this.src='/MaximusHotel/img/room/default.jpg'">
                 <div class="rd-text">
                     <div class="rd-title">
                         <h3>Room ${room.room_id || ''} ${room.room_id ? '(' + room.category_name + ')' : room.category_name || ''}</h3>
@@ -650,6 +650,7 @@
     </script>
 </body>
 </html>
+
 
 
 

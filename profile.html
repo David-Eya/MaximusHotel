@@ -425,9 +425,9 @@
         // Build image URL
         let imageUrl;
         if (imageName && imageName.trim() !== '') {
-            imageUrl = '/profile_img/' + imageName;
+            imageUrl = '/MaximusHotel/profile_img/' + imageName;
         } else {
-            imageUrl = '/profile_img/default.jpg';
+            imageUrl = '/MaximusHotel/profile_img/default.jpg';
         }
 
         console.log('Setting profile image:', imageUrl);
@@ -447,7 +447,7 @@
         img.onerror = () => {
             console.error('Failed to load profile image:', imageUrl);
             // Try default image
-            const defaultUrl = '/profile_img/default.jpg';
+            const defaultUrl = '/MaximusHotel/profile_img/default.jpg';
             container.style.backgroundImage = `url('${defaultUrl}')`;
             console.log('Using default image:', defaultUrl);
         };
@@ -744,6 +744,7 @@
 <!-- Navigation update is now handled by layout-loader.js after layouts are loaded -->
 </body>
 </html>
+
 
 
 

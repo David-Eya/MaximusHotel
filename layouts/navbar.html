@@ -65,7 +65,7 @@
                                                     const img = new Image();
                                                     const imagePath = (userData.image && userData.image.trim() && userData.image !== 'default.jpg') 
                                                         ? `/profile_img/${userData.image}` 
-                                                        : '/profile_img/default.jpg';
+                                                        : '/MaximusHotel/profile_img/default.jpg';
                                                     
                                                     img.onload = function() {
                                                         navProfileImage.src = imagePath;
@@ -73,7 +73,7 @@
                                                     };
                                                     img.onerror = function() {
                                                         // Fallback to default if image fails
-                                                        navProfileImage.src = '/profile_img/default.jpg';
+                                                        navProfileImage.src = '/MaximusHotel/profile_img/default.jpg';
                                                         navProfileImage.style.display = 'block';
                                                     };
                                                     img.src = imagePath;
@@ -107,6 +107,7 @@
     </div>
 </header>
 <!-- Header End -->
+
 
 
 
