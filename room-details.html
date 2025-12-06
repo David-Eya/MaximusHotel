@@ -127,6 +127,7 @@
     <script src="/MaximusHotel/js/jquery.slicknav.js"></script>
     <script src="/MaximusHotel/js/owl.carousel.min.js"></script>
     <script src="/MaximusHotel/js/main.js"></script>
+    <script src="/MaximusHotel/js/config.js"></script>
     <script src="/MaximusHotel/js/auth.js"></script>
     <script src="/MaximusHotel/js/pages.js"></script>
     <script>
@@ -264,13 +265,16 @@
             const container = document.getElementById('roomDetailsContainer');
             // Use backend URL for room images
             let imagePath;
+            let defaultImagePath;
             if (typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl) {
                 imagePath = CONFIG.getRoomImageUrl(room.image);
+                defaultImagePath = CONFIG.getRoomImageUrl('default.jpg');
             } else {
                 const backendUrl = 'https://hotelmaximus.bytevortexz.com';
                 imagePath = room.image && room.image.trim() && room.image !== 'default.jpg'
                     ? `${backendUrl}/img/room/${room.image}`
                     : `${backendUrl}/img/room/default.jpg`;
+                defaultImagePath = `${backendUrl}/img/room/default.jpg`;
             }
             
             container.innerHTML = `
@@ -541,7 +545,7 @@
                         confirmButtonText: 'View Reservations'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = 'myreservation.html';
+                            window.location.href = '/MaximusHotel/myreservation.html';
                         } else {
                             // Reset form
                             isAvailable = false;
@@ -561,7 +565,7 @@
                             confirmButtonText: 'Go to Profile'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = 'profile.html';
+                                window.location.href = '/MaximusHotel/profile.html';
                             }
                         });
                     } else {
