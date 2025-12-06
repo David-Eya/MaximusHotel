@@ -20,9 +20,10 @@ const LayoutLoader = {
      * Get the full path to a layout file
      */
     getLayoutPath(layoutName) {
-        // Use absolute path from document root
-        // In Laravel, the public folder is the document root, so layouts are at /layouts/
-        return `/layouts/${layoutName}`;
+        // Use absolute path with repository name for GitHub Pages
+        // For GitHub Pages: /MaximusHotel/layouts/
+        // For local development: /layouts/ (if needed)
+        return `/MaximusHotel/layouts/${layoutName}`;
     },
     
     /**
@@ -258,7 +259,7 @@ const LayoutLoader = {
                             timerProgressBar: true
                         }).then((result) => {
                             if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
-                                window.location.href = 'login.html';
+                                window.location.href = '/MaximusHotel/login.html';
                             }
                         });
                     });
@@ -279,7 +280,7 @@ const LayoutLoader = {
                             timerProgressBar: true
                         }).then((result) => {
                             if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
-                                window.location.href = 'login.html';
+                                window.location.href = '/MaximusHotel/login.html';
                             }
                         });
                     });
@@ -290,10 +291,10 @@ const LayoutLoader = {
                 if (currentPage === 'index.html') {
                     const user = result.user;
                     if (user.usertype === 'Admin') {
-                        window.location.href = 'admin/index.html';
+                        window.location.href = '/MaximusHotel/views/index.html';
                         return;
                     } else if (user.usertype === 'Incharge') {
-                        window.location.href = 'incharge/index.html';
+                        window.location.href = '/MaximusHotel/views/index.html';
                         return;
                     }
                 }
@@ -371,11 +372,11 @@ const LayoutLoader = {
         // Update profile image/icon
         if (profileImage && profileIcon) {
             if (userData.image && userData.image.trim()) {
-                profileImage.src = `/profile_img/${userData.image}`;
+                profileImage.src = `/MaximusHotel/profile_img/${userData.image}`;
                 profileImage.style.display = 'block';
                 profileIcon.style.display = 'none';
             } else {
-                profileImage.src = '/profile_img/default.jpg';
+                profileImage.src = '/MaximusHotel/profile_img/default.jpg';
                 profileImage.style.display = 'block';
                 profileIcon.style.display = 'none';
             }
