@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings Management - Maximus Hotel</title>
+    <link rel="icon" href="/img/favicon.png" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h4><img src="/img/favicon.png" alt="M" class="logo-letter">aximus Hotel</h4>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/admin/index.html" class="nav-item">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="/admin/users.html" class="nav-item" id="navUsers" style="display: none;">
+                <i class="fas fa-users"></i> Users
+            </a>
+            <a href="/admin/bookings.html" class="nav-item active">
+                <i class="fas fa-calendar-check"></i> Bookings
+            </a>
+            <a href="/admin/rooms.html" class="nav-item">
+                <i class="fas fa-bed"></i> Rooms
+            </a>
+            <a href="/admin/room-categories.html" class="nav-item" id="navRoomCategories" style="display: none;">
+                <i class="fas fa-tags"></i> Room Categories
+            </a>
+            <a href="/admin/profile.html" class="nav-item">
+                <i class="fas fa-user"></i> My Profile
+            </a>
+            <a href="#" id="adminLogout" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-outline-light d-md-none" id="sidebarToggle" style="background: #084466; border-color: #084466; color: white;">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 class="mb-0">Bookings Management</h2>
+            </div>
+            <div class="user-info">
+                <div class="user-details">
+                    <span id="adminUserName">Admin</span>
+                    <span id="adminUserType" class="user-type">Admin</span>
+                </div>
+                <a href="/admin/profile.html" style="text-decoration: none; color: inherit;">
+                    <img id="adminProfileImage" src="/profile_img/default.jpg" alt="Admin" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; cursor: pointer;">
+                    <i class="fas fa-user-circle" id="adminProfileIcon" style="font-size: 2rem; cursor: pointer;"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Button Legend -->
+        <div class="button-legend-compact mb-3" id="buttonLegend" style="display: none;">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <small class="text-muted"><i class="fas fa-info-circle"></i> <strong>Buttons:</strong></small>
+                <div class="d-flex align-items-center gap-1">
+                    <button class="btn btn-sm btn-success" disabled><i class="fas fa-check"></i></button>
+                    <small class="text-muted">Approve</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <button class="btn btn-sm btn-danger" disabled><i class="fas fa-times"></i></button>
+                    <small class="text-muted">Reject</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <button class="btn btn-sm btn-info" disabled><i class="fas fa-key"></i></button>
+                    <small class="text-muted">Check In</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">All Bookings</h5>
+                <div class="d-flex gap-2 align-items-center" style="flex-wrap: nowrap;">
+                    <select class="form-control" id="statusFilter" style="width: 200px; flex-shrink: 0;">
+                        <option value="">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Reject">Rejected</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="checked_in">Checked In</option>
+                    </select>
+                    <div class="input-group" style="flex: 1 1 auto; min-width: 200px; max-width: 400px;">
+                        <input type="text" class="form-control" id="searchBookings" placeholder="Search bookings...">
+                        <button class="btn btn-outline-secondary" type="button" id="searchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-primary" onclick="openBookingModal()" style="flex-shrink: 0; white-space: nowrap;">
+                        <i class="fas fa-plus"></i> Add Booking
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Guest Name</th>
+                                <th>Room</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Days</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <tr><td colspan="9" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav>
+                    <ul class="pagination justify-content-center" id="bookingsPagination"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm">
+                        <div class="mb-3">
+                            <label class="form-label">Guest *</label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" id="guestSearch" placeholder="Search guest by name or email..." oninput="filterGuests()" onkeyup="filterGuests()">
+                            </div>
+                            <select class="form-control" id="userId" required onchange="onGuestSelected()">
+                                <option value="">Select Guest</option>
+                            </select>
+                            <div id="guestResults" class="list-group mt-2" style="max-height: 200px; overflow-y: auto; display: none;">
+                                <!-- Guest results will appear here -->
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Room *</label>
+                            <select class="form-control" id="roomId" required>
+                                <option value="">Select Room</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Check-in Date *</label>
+                            <input type="date" class="form-control" id="checkIn" required onchange="onCheckInChange()">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Check-out Date *</label>
+                            <input type="date" class="form-control" id="checkOut" required onchange="calculateDays()">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Number of Days</label>
+                            <input type="number" class="form-control" id="noOfDays" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" id="contact" maxlength="11" placeholder="11 digits">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status *</label>
+                            <select class="form-control" id="bookingStatus" required>
+                                <option value="Approved" selected>Approved</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveBooking()">Create Booking</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin-auth.js"></script>
+    <script src="/js/admin-api.js"></script>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        let currentPage = 1;
+        const limit = 10;
+        let availableUsers = [];
+        let availableRooms = [];
+
+        // Helper function to properly close modal and remove backdrop
+        function closeModal(modalId) {
+            const modalElement = document.getElementById(modalId);
+            if (!modalElement) return;
+            
+            // Get or create modal instance
+            let modal = bootstrap.Modal.getInstance(modalElement);
+            if (!modal) {
+                modal = new bootstrap.Modal(modalElement);
+            }
+            
+            // Hide the modal
+            modal.hide();
+            
+            // Cleanup function - wait for Bootstrap's animation to complete
+            const performCleanup = () => {
+                const isModalHidden = !modalElement.classList.contains('show');
+                
+                if (isModalHidden) {
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(backdrop => {
+                        const showingModals = document.querySelectorAll('.modal.show');
+                        if (showingModals.length === 0) {
+                            backdrop.remove();
+                        }
+                    });
+                    
+                    const showingModals = document.querySelectorAll('.modal.show');
+                    if (showingModals.length === 0) {
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+                    }
+                }
+            };
+            
+            setTimeout(performCleanup, 350);
+            
+            const cleanupHandler = function() {
+                performCleanup();
+                modalElement.removeEventListener('hidden.bs.modal', cleanupHandler);
+            };
+            modalElement.addEventListener('hidden.bs.modal', cleanupHandler, { once: true });
+        }
+
+        let allUsers = []; // Store all users for filtering
+
+        async function loadUsers() {
+            try {
+                // Use getClients instead of getUsers - works for both Admin and Incharge
+                const result = await adminAPI.getClients('', 1000, 1);
+                if (result.success) {
+                    const users = result.data || result.users || [];
+                    allUsers = users; // Already filtered to Client users by the API
+                    availableUsers = allUsers; // Initialize availableUsers with all users
+                    updateGuestDropdown();
+                } else {
+                    console.error('Error loading clients:', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading clients:', error);
+            }
+        }
+
+        function updateGuestDropdown() {
+            const userIdSelect = document.getElementById('userId');
+            if (userIdSelect) {
+                const currentValue = userIdSelect.value; // Preserve current selection
+                userIdSelect.innerHTML = '<option value="">Select Guest</option>' +
+                    availableUsers.map(user => 
+                        `<option value="${user.userid}" data-contact="${user.contact || ''}" ${user.userid == currentValue ? 'selected' : ''}>${user.fname} ${user.lname || ''} (${user.email})</option>`
+                    ).join('');
+                
+                // Restore selection if it still exists
+                if (currentValue) {
+                    userIdSelect.value = currentValue;
+                }
+            }
+        }
+
+        function filterGuests() {
+            const searchTerm = document.getElementById('guestSearch').value.toLowerCase().trim();
+            const guestResults = document.getElementById('guestResults');
+            const userIdSelect = document.getElementById('userId');
+            
+            if (searchTerm === '') {
+                // Hide results, show dropdown
+                guestResults.style.display = 'none';
+                userIdSelect.style.display = 'block';
+                availableUsers = allUsers;
+                updateGuestDropdown();
+            } else {
+                // Show filtered results, hide dropdown
+                userIdSelect.style.display = 'none';
+                guestResults.style.display = 'block';
+                
+                const filteredUsers = allUsers.filter(user => {
+                    const fullName = `${user.fname} ${user.lname || ''}`.toLowerCase();
+                    const email = (user.email || '').toLowerCase();
+                    return fullName.includes(searchTerm) || email.includes(searchTerm);
+                });
+                
+                if (filteredUsers.length === 0) {
+                    guestResults.innerHTML = '<div class="list-group-item text-muted">No guests found</div>';
+                } else {
+                    guestResults.innerHTML = filteredUsers.map(user => 
+                        `<a href="#" class="list-group-item list-group-item-action" onclick="selectGuest(${user.userid}, '${(user.fname + ' ' + (user.lname || '')).replace(/'/g, "\\'")}', '${(user.email || '').replace(/'/g, "\\'")}', '${(user.contact || '').replace(/'/g, "\\'")}'); return false;">
+                            <div class="fw-bold">${user.fname} ${user.lname || ''}</div>
+                            <small class="text-muted">${user.email}</small>
+                        </a>`
+                    ).join('');
+                }
+            }
+        }
+        
+        function selectGuest(userId, name, email, contact) {
+            const userIdSelect = document.getElementById('userId');
+            const guestSearch = document.getElementById('guestSearch');
+            const guestResults = document.getElementById('guestResults');
+            const contactInput = document.getElementById('contact');
+            
+            // Set the selected value
+            userIdSelect.value = userId;
+            
+            // Update search box to show selected guest
+            guestSearch.value = `${name} (${email})`;
+            
+            // Hide results, show dropdown
+            guestResults.style.display = 'none';
+            userIdSelect.style.display = 'block';
+            
+            // Auto-fill contact
+            contactInput.value = contact || '';
+            
+            // Trigger change event
+            onGuestSelected();
+        }
+
+        function onGuestSelected() {
+            const userIdSelect = document.getElementById('userId');
+            const selectedValue = userIdSelect.value;
+            const contactInput = document.getElementById('contact');
+            
+            if (selectedValue) {
+                // Find the selected user and get their contact
+                const selectedUser = allUsers.find(u => u.userid == selectedValue);
+                if (selectedUser) {
+                    contactInput.value = selectedUser.contact || '';
+                } else {
+                    contactInput.value = '';
+                }
+            } else {
+                contactInput.value = '';
+            }
+        }
+
+        async function loadAvailableRooms() {
+            try {
+                const result = await adminAPI.getRooms('', 1000, 1, '', 'available');
+                if (result.success) {
+                    const rooms = result.data || result.rooms || [];
+                    availableRooms = rooms;
+                    const roomIdSelect = document.getElementById('roomId');
+                    if (roomIdSelect) {
+                        roomIdSelect.innerHTML = '<option value="">Select Room</option>' +
+                            rooms.map(room => 
+                                `<option value="${room.room_id}">${room.category_name} - Room ${room.room_id}</option>`
+                            ).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading rooms:', error);
+            }
+        }
+
+        function onCheckInChange() {
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut');
+            const checkOutValue = checkOut.value;
+            
+            if (checkIn) {
+                // Set minimum date for check-out to be the day after check-in
+                const checkInDate = new Date(checkIn);
+                checkInDate.setDate(checkInDate.getDate() + 1); // Add one day
+                const minCheckOutDate = checkInDate.toISOString().split('T')[0];
+                checkOut.setAttribute('min', minCheckOutDate);
+                
+                // If check-out is already selected and is before or equal to check-in, clear it
+                if (checkOutValue) {
+                    const checkOutDate = new Date(checkOutValue);
+                    const checkInDateOnly = new Date(checkIn);
+                    if (checkOutDate <= checkInDateOnly) {
+                        checkOut.value = '';
+                        document.getElementById('noOfDays').value = '';
+                    }
+                }
+            }
+            
+            // Calculate days if both dates are set
+            calculateDays();
+        }
+
+        function calculateDays() {
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+            const noOfDaysInput = document.getElementById('noOfDays');
+            
+            if (checkIn && checkOut) {
+                const checkInDate = new Date(checkIn);
+                const checkOutDate = new Date(checkOut);
+                
+                if (checkOutDate > checkInDate) {
+                    const diffTime = Math.abs(checkOutDate - checkInDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    noOfDaysInput.value = diffDays;
+                } else {
+                    noOfDaysInput.value = 0;
+                }
+            } else {
+                noOfDaysInput.value = '';
+            }
+        }
+
+        async function openBookingModal() {
+            const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            document.getElementById('bookingForm').reset();
+            document.getElementById('noOfDays').value = '';
+            document.getElementById('guestSearch').value = '';
+            document.getElementById('guestResults').style.display = 'none';
+            document.getElementById('userId').style.display = 'block';
+            
+            // Set today's date as minimum for check-in
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('checkIn').setAttribute('min', today);
+            document.getElementById('checkOut').removeAttribute('min'); // Will be set when check-in is selected
+            
+            // Load users and rooms if not already loaded
+            if (allUsers.length === 0) {
+                await loadUsers();
+            } else {
+                availableUsers = allUsers;
+                updateGuestDropdown();
+            }
+            if (availableRooms.length === 0) {
+                await loadAvailableRooms();
+            }
+            
+            modal.show();
+        }
+
+        async function saveBooking() {
+            const userId = document.getElementById('userId').value;
+            const roomId = document.getElementById('roomId').value;
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+            const noOfDays = document.getElementById('noOfDays').value;
+            const contact = document.getElementById('contact').value;
+            const status = document.getElementById('bookingStatus').value;
+
+            if (!userId || !roomId || !checkIn || !checkOut || !noOfDays) {
+                Toast.fire({ icon: 'error', title: 'Please fill in all required fields' });
+                return;
+            }
+
+            if (parseInt(noOfDays) <= 0) {
+                Toast.fire({ icon: 'error', title: 'Check-out date must be after check-in date' });
+                return;
+            }
+
+            try {
+                const bookingData = {
+                    userid: parseInt(userId),
+                    room_id: parseInt(roomId),
+                    check_in: checkIn,
+                    check_out: checkOut,
+                    no_of_days: parseInt(noOfDays),
+                    contact: contact || '',
+                    status: status || 'Approved'
+                };
+
+                const result = await adminAPI.createBooking(bookingData);
+                if (result.success) {
+                    Toast.fire({ icon: 'success', title: 'Booking created successfully' });
+                    closeModal('bookingModal');
+                    setTimeout(() => {
+                        loadBookings();
+                    }, 100);
+                } else {
+                    Toast.fire({ icon: 'error', title: result.message || 'Failed to create booking' });
+                }
+            } catch (error) {
+                console.error('Error creating booking:', error);
+                Toast.fire({ icon: 'error', title: 'Failed to create booking' });
+            }
+        }
+
+        async function loadBookings(search = '', status = '') {
+            try {
+                const result = await adminAPI.getBookings(search, status, limit, currentPage);
+                if (result.success) {
+                    // Handle response structure - API returns data and pagination
+                    const bookings = result.data || result.bookings || [];
+                    const pagination = result.pagination || {};
+                    updateBookingsTable(bookings);
+                    updatePagination(
+                        pagination.total_items || result.total || 0,
+                        pagination.current_page || result.page || currentPage,
+                        pagination.items_per_page || result.limit || limit
+                    );
+                } else {
+                    Toast.fire({ icon: 'error', title: result.message || 'Failed to load bookings' });
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                Toast.fire({ icon: 'error', title: 'Failed to load bookings' });
+            }
+        }
+
+        function updateBookingsTable(bookings) {
+            const tbody = document.getElementById('bookingsTableBody');
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">No bookings found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(booking => {
+                const statusClass = {
+                    'Pending': 'warning',
+                    'Approved': 'success',
+                    'Reject': 'danger',
+                    'Cancelled': 'secondary',
+                    'checked_in': 'info'
+                }[booking.status] || 'secondary';
+
+                return `
+                    <tr>
+                        <td>#${booking.book_id}</td>
+                        <td>${booking.fname} ${booking.lname}</td>
+                        <td>${booking.category_name} (${booking.room_id})</td>
+                        <td>${new Date(booking.check_in).toLocaleDateString()}</td>
+                        <td>${new Date(booking.check_out).toLocaleDateString()}</td>
+                        <td>${parseInt(booking.no_of_days) || 0} ${parseInt(booking.no_of_days) === 1 ? 'day' : 'days'}</td>
+                        <td>₱${parseFloat(booking.total_price || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td><span class="badge bg-${statusClass}">${booking.status}</span></td>
+                        <td>
+                            ${booking.status === 'Pending' ? `
+                                <button class="btn btn-sm btn-success" onclick="updateBookingStatus(${booking.book_id}, 'Approved')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="updateBookingStatus(${booking.book_id}, 'Reject')">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            ` : booking.status === 'Approved' ? `
+                                <button class="btn btn-sm btn-info" onclick="updateBookingStatus(${booking.book_id}, 'checked_in')">
+                                    <i class="fas fa-key"></i> Check In
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updatePagination(total, page, limit) {
+            const totalPages = Math.ceil(total / limit);
+            const pagination = document.getElementById('bookingsPagination');
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) {
+                return;
+            }
+
+            const search = document.getElementById('searchBookings').value;
+            const status = document.getElementById('statusFilter').value;
+
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${page === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" onclick="if (currentPage > 1) { currentPage--; loadBookings('${search}', '${status}'); } return false;">Previous</a>`;
+            pagination.appendChild(prevLi);
+
+            // Page numbers with ellipsis
+            const maxVisible = 5;
+            let startPage = Math.max(1, page - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            // First page
+            if (startPage > 1) {
+                const firstLi = document.createElement('li');
+                firstLi.className = 'page-item';
+                firstLi.innerHTML = `<a class="page-link" href="#" onclick="currentPage = 1; loadBookings('${search}', '${status}'); return false;">1</a>`;
+                pagination.appendChild(firstLi);
+
+                if (startPage > 2) {
+                    const ellipsisLi = document.createElement('li');
+                    ellipsisLi.className = 'page-item disabled';
+                    ellipsisLi.innerHTML = `<span class="page-link">...</span>`;
+                    pagination.appendChild(ellipsisLi);
+                }
+            }
+
+            // Page range
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === page ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="currentPage = ${i}; loadBookings('${search}', '${status}'); return false;">${i}</a>`;
+                pagination.appendChild(li);
+            }
+
+            // Last page
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsisLi = document.createElement('li');
+                    ellipsisLi.className = 'page-item disabled';
+                    ellipsisLi.innerHTML = `<span class="page-link">...</span>`;
+                    pagination.appendChild(ellipsisLi);
+                }
+
+                const lastLi = document.createElement('li');
+                lastLi.className = 'page-item';
+                lastLi.innerHTML = `<a class="page-link" href="#" onclick="currentPage = ${totalPages}; loadBookings('${search}', '${status}'); return false;">${totalPages}</a>`;
+                pagination.appendChild(lastLi);
+            }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${page === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" onclick="if (currentPage < ${totalPages}) { currentPage++; loadBookings('${search}', '${status}'); } return false;">Next</a>`;
+            pagination.appendChild(nextLi);
+        }
+
+        async function updateBookingStatus(book_id, status) {
+            const statusText = status === 'Approved' ? 'approve' : status === 'Reject' ? 'reject' : status === 'checked_in' ? 'check in' : status.toLowerCase();
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: `Do you want to ${statusText} this booking?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: status === 'Approved' || status === 'checked_in' ? '#28a745' : '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: `Yes, ${statusText} it`
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const apiResult = await adminAPI.updateBookingStatus(book_id, status);
+                    if (apiResult.success) {
+                        Toast.fire({ icon: 'success', title: 'Booking status updated' });
+                        loadBookings();
+                    } else {
+                        Toast.fire({ icon: 'error', title: apiResult.message || 'Failed to update booking' });
+                    }
+                } catch (error) {
+                    console.error('Error updating booking:', error);
+                    Toast.fire({ icon: 'error', title: 'Failed to update booking' });
+                }
+            }
+        }
+
+        // Live search with debouncing
+        let searchTimeout;
+        document.getElementById('searchBookings').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const search = e.target.value;
+                const status = document.getElementById('statusFilter').value;
+                currentPage = 1;
+                loadBookings(search, status);
+            }, 300); // Wait 300ms after user stops typing
+        });
+
+        // Keep search button for manual trigger if needed
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const search = document.getElementById('searchBookings').value;
+            const status = document.getElementById('statusFilter').value;
+            currentPage = 1;
+            loadBookings(search, status);
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', () => {
+            const search = document.getElementById('searchBookings').value;
+            const status = document.getElementById('statusFilter').value;
+            currentPage = 1;
+            loadBookings(search, status);
+        });
+
+        document.getElementById('adminLogout').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const result = await Swal.fire({
+                title: 'Logout?',
+                text: 'Are you sure you want to logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, logout'
+            });
+
+            if (result.isConfirmed) {
+                const auth = new Auth();
+                await auth.logout();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logout Successful',
+                    text: 'You have been logged out successfully',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#084466',
+                    allowOutsideClick: false,
+                    timer: 1500,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = '/login.html';
+                });
+            }
+        });
+
+        // Toggle sidebar on mobile
+        document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('open');
+            document.body.classList.toggle('sidebar-open');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+                if (!sidebar.contains(e.target) && e.target !== toggle && !toggle?.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                    document.body.classList.remove('sidebar-open');
+                }
+            }
+        });
+
+        // Update admin profile image
+        function updateAdminProfileImage(userData) {
+            const profileImage = document.getElementById('adminProfileImage');
+            const profileIcon = document.getElementById('adminProfileIcon');
+            
+            if (userData && userData.image) {
+                profileImage.src = `/profile_img/${userData.image}`;
+                profileImage.style.display = 'block';
+                if (profileIcon) profileIcon.style.display = 'none';
+            } else {
+                profileImage.src = '/profile_img/default.jpg';
+                profileImage.style.display = 'block';
+                if (profileIcon) profileIcon.style.display = 'none';
+            }
+        }
+
+        // Show/hide button legend based on screen size
+        function toggleButtonLegend() {
+            const legend = document.getElementById('buttonLegend');
+            if (legend) {
+                if (window.innerWidth <= 768) {
+                    legend.style.display = 'block';
+                } else {
+                    legend.style.display = 'none';
+                }
+            }
+        }
+
+        window.addEventListener('resize', toggleButtonLegend);
+
+        // Hide menu items for incharge users
+        function updateSidebarNavigation() {
+            const userData = new Auth().getUser();
+            if (userData && userData.usertype === 'Incharge') {
+                const navUsers = document.getElementById('navUsers');
+                const navRoomCategories = document.getElementById('navRoomCategories');
+                if (navUsers) navUsers.style.display = 'none';
+                if (navRoomCategories) navRoomCategories.style.display = 'none';
+            } else {
+                const navUsers = document.getElementById('navUsers');
+                const navRoomCategories = document.getElementById('navRoomCategories');
+                if (navUsers) navUsers.style.display = '';
+                if (navRoomCategories) navRoomCategories.style.display = '';
+            }
+        }
+
+        window.onAdminReady = () => {
+            const userData = new Auth().getUser();
+            if (userData) {
+                document.getElementById('adminUserName').textContent = userData.fname || 'Admin';
+                document.getElementById('adminUserType').textContent = userData.usertype || 'Admin';
+                updateAdminProfileImage(userData);
+            }
+            updateSidebarNavigation();
+            toggleButtonLegend(); // Show legend on mobile
+            loadBookings();
+        };
+    </script>
+</body>
+</html>
+

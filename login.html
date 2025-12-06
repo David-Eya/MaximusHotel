@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register & Login</title>
+  <link rel="icon" href="/img/favicon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/css/style2.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .links {
+      display: flex !important;
+      justify-content: space-around !important;
+      align-items: center !important;
+      flex-wrap: nowrap !important;
+      padding: 0 4rem !important;
+      margin-top: 1.2rem !important;
+      font-weight: bold !important;
+    }
+    
+    .links p {
+      margin: 0 !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+    }
+    
+    .links button {
+      margin: 0 !important;
+      flex-shrink: 0 !important;
+      white-space: nowrap !important;
+    }
+    
+    /* Mobile Responsive for Links */
+    @media (max-width: 768px) {
+      .links {
+        padding: 0 1rem !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        flex-wrap: nowrap !important;
+      }
+      
+      .links p {
+        font-size: 0.9rem !important;
+      }
+      
+      .links button {
+        font-size: 0.9rem !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .links {
+        padding: 0 0.5rem !important;
+        gap: 0.3rem !important;
+        flex-wrap: nowrap !important;
+      }
+      
+      .links p {
+        font-size: 0.85rem !important;
+      }
+      
+      .links button {
+        font-size: 0.85rem !important;
+      }
+    }
+
+    /* Link buttons (Sign In, Register links) */
+    button:not(.btn):not(.close-button) {
+      color: #084466 !important;
+      border: none !important;
+      background-color: transparent !important;
+      font-size: 1rem !important;
+      font-weight: bold !important;
+    }
+
+    button:not(.btn):not(.close-button):hover {
+      text-decoration: underline !important;
+    }
+    
+    /* Ensure .btn class buttons maintain their styling */
+    .btn {
+      font-size: 1.1rem !important;
+      padding: 12px 0 !important;
+      border-radius: 5px !important;
+      outline: none !important;
+      border: none !important;
+      width: 100% !important;
+      background-color: #084466 !important;
+      color: white !important;
+      cursor: pointer !important;
+      transition: all 0.3s ease !important;
+      font-weight: 600 !important;
+      margin-top: 10px !important;
+      margin-bottom: 0 !important;
+    }
+    
+    .btn:hover {
+      background-color: #063d57 !important;
+      border: none !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 8px rgba(8, 68, 102, 0.3) !important;
+      text-decoration: none !important;
+    }
+    
+    .btn:active {
+      transform: translateY(0) !important;
+    }
+    
+    /* SweetAlert2 Button Styling */
+    .swal2-confirm {
+      background-color: #084466 !important;
+      border-color: #084466 !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+      padding: 10px 24px !important;
+      border-radius: 5px !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    .swal2-confirm:hover {
+      background-color: #063d57 !important;
+      border-color: #063d57 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(8, 68, 102, 0.3) !important;
+    }
+    
+    .swal2-confirm:focus {
+      box-shadow: 0 0 0 3px rgba(8, 68, 102, 0.3) !important;
+    }
+    
+    .swal2-cancel {
+      background-color: #6c757d !important;
+      border-color: #6c757d !important;
+      color: #fff !important;
+    }
+    
+    .swal2-cancel:hover {
+      background-color: #5a6268 !important;
+      border-color: #5a6268 !important;
+    }
+    
+    /* Password Strength Meter Styles */
+    #passwordStrengthMeter {
+      padding: 0 15px;
+      margin: -10px 0 15px 0;
+    }
+    
+    .strength-weak {
+      background-color: #dc3545 !important;
+    }
+    
+    .strength-fair {
+      background-color: #ffc107 !important;
+    }
+    
+    .strength-good {
+      background-color: #17a2b8 !important;
+    }
+    
+    .strength-strong {
+      background-color: #28a745 !important;
+    }
+    
+    #passwordMatchText.match {
+      color: #28a745 !important;
+    }
+    
+    #passwordMatchText.mismatch {
+      color: #dc3545 !important;
+    }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      #passwordStrengthMeter {
+        padding: 0 10px;
+        margin: -8px 0 12px 0;
+      }
+      
+      #strengthText {
+        font-size: 11px !important;
+      }
+      
+      #passwordMatchText {
+        font-size: 11px !important;
+        margin: -8px 0 12px 0 !important;
+      }
+      
+      .btn {
+        font-size: 1rem !important;
+        padding: 10px 0 !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #passwordStrengthMeter {
+        padding: 0 8px;
+        margin: -5px 0 10px 0;
+      }
+      
+      #strengthText {
+        font-size: 10px !important;
+        line-height: 1.3;
+      }
+      
+      #passwordMatchText {
+        font-size: 10px !important;
+        margin: -5px 0 10px 0 !important;
+      }
+      
+      .btn {
+        font-size: 0.95rem !important;
+        padding: 10px 0 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+      <button class="close-button" style="color: white !important;" onclick="location.href='/index.html'">
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
+  
+  <div class="container" id="signUp" style="display: none;">
+    <h1 class="form-title">Register</h1>
+    <form id="registerForm" novalidate onsubmit="return false;">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="fname" id="regFname" placeholder="First Name" required>
+        <label for="regFname">First Name</label>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-user" aria-hidden="true"></i>
+        <input type="text" name="lname" id="regLname" placeholder="Last Name" required>
+        <label for="regLname">Last Name</label>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-user" aria-hidden="true"></i>
+        <input type="text" name="username" id="regUsername" placeholder="Username" required>
+        <label for="regUsername">Username</label>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" id="regEmail" placeholder="Email" required>
+        <label for="regEmail">Email</label>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="password" id="regPassword" placeholder="Password" required oninput="checkPasswordStrength()">
+        <label for="regPassword">Password</label>
+      </div>
+      <!-- Password Strength Meter -->
+      <div id="passwordStrengthMeter" style="display: none; margin: -10px 0 15px 0;">
+        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+          <div id="strengthBar1" style="flex: 1; height: 4px; background-color: #e0e0e0; border-radius: 2px; transition: background-color 0.3s;"></div>
+          <div id="strengthBar2" style="flex: 1; height: 4px; background-color: #e0e0e0; border-radius: 2px; transition: background-color 0.3s;"></div>
+          <div id="strengthBar3" style="flex: 1; height: 4px; background-color: #e0e0e0; border-radius: 2px; transition: background-color 0.3s;"></div>
+          <div id="strengthBar4" style="flex: 1; height: 4px; background-color: #e0e0e0; border-radius: 2px; transition: background-color 0.3s;"></div>
+        </div>
+        <small id="strengthText" style="color: #666; font-size: 12px;"></small>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="confirmPassword" id="regConfirmPassword" placeholder="Confirm Password" required oninput="checkPasswordMatch()">
+        <label for="regConfirmPassword">Confirm Password</label>
+      </div>
+      <small id="passwordMatchText" style="display: none; color: #dc3545; font-size: 12px; margin: -10px 0 15px 0;"></small>
+      <button type="button" class="btn" id="registerSubmitBtn">Sign Up</button>
+      <p class="or">
+        ---------------or---------------
+      </p>
+      <!--<div class="icons">-->
+      <!--  <i class="fab fa-google"></i>-->
+      <!--  <i class="fab fa-facebook"></i>-->
+      <!--</div>-->
+      <div class="links">
+        <p>Already Have An Account?</p>
+        <button type="button" id="signInButton">Sign In</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- OTP Verification for Registration -->
+  <div class="container" id="otpVerification" style="display: none;">
+    <h1 class="form-title">Verify Email</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 20px;">We've sent a verification code to your email</p>
+    <form id="otpForm" novalidate>
+      <div class="input-group">
+        <i class="fas fa-key"></i>
+        <input type="text" name="otp" id="otpCode" placeholder="Enter 6-digit OTP" maxlength="6" required>
+        <label for="otpCode">OTP Code</label>
+      </div>
+      <input type="submit" class="btn" value="Verify">
+      <p style="text-align: center; margin-top: 15px;">
+        <a href="#" id="resendOtp" style="color: #084466; text-decoration: none;">Resend OTP</a>
+      </p>
+      <div class="links">
+        <button type="button" id="backToRegister">Back</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Forgot Password -->
+  <div class="container" id="forgotPassword" style="display: none;">
+    <h1 class="form-title">Forgot Password</h1>
+    <form id="forgotPasswordForm" novalidate>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" id="forgotEmail" placeholder="Email" required>
+        <label for="forgotEmail">Email</label>
+      </div>
+      <input type="submit" class="btn" value="Send OTP">
+      <div class="links">
+        <button type="button" id="backToLogin">Back to Login</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- OTP Verification for Password Reset -->
+  <div class="container" id="forgotPasswordOtpVerification" style="display: none;">
+    <h1 class="form-title">Verify OTP</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 20px;">We've sent a verification code to your email</p>
+    <form id="forgotPasswordOtpForm" novalidate>
+      <div class="input-group">
+        <i class="fas fa-key"></i>
+        <input type="text" name="otp" id="forgotPasswordOtpCode" placeholder="Enter 6-digit OTP" maxlength="6" required>
+        <label for="forgotPasswordOtpCode">OTP Code</label>
+      </div>
+      <input type="submit" class="btn" value="Verify">
+      <p style="text-align: center; margin-top: 15px;">
+        <a href="#" id="resendForgotPasswordOtp" style="color: #084466; text-decoration: none;">Resend OTP</a>
+      </p>
+      <div class="links">
+        <button type="button" id="backToForgotPasswordFromOtp">Back</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Reset Password (after OTP verification) -->
+  <div class="container" id="resetPassword" style="display: none;">
+    <h1 class="form-title">Reset Password</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 20px;">Enter your new password</p>
+    <form id="resetPasswordForm" novalidate>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="new_password" id="newPassword" placeholder="New Password" required>
+        <label for="newPassword">New Password</label>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" required>
+        <label for="confirmPassword">Confirm Password</label>
+      </div>
+      <input type="submit" class="btn" value="Reset Password">
+      <div class="links">
+        <button type="button" id="backToForgotPasswordOtp">Back</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="container" id="signIn">
+    <h1 class="form-title">Sign In</h1>
+    <form id="loginForm" novalidate>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" id="loginEmail" placeholder="Email" required>
+        <label for="loginEmail">Email</label>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="password" id="loginPassword" placeholder="Password" required>
+        <label for="loginPassword">Password</label>
+      </div>
+      <p class="recover">
+        <a href="#" id="forgotPasswordLink">Forgot Password</a>
+      </p>
+      <input type="submit" class="btn" value="Sign In">
+      <p class="or">
+        ---------------or---------------
+      </p>
+      <!--<div class="icons">-->
+      <!--  <i class="fab fa-google"></i>-->
+      <!--  <i class="fab fa-facebook"></i>-->
+      <!--</div>-->
+      <div class="links">
+        <p>Don't have an account?</p>
+        <button type="button" id="signUpButton">Register</button>
+      </div>
+    </form>
+  </div>
+  <script src="/js/script2.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    // Handle login form submission
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      
+      // Show loading state
+      Swal.fire({
+        title: 'Logging in...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        const result = await auth.login(email, password);
+        
+        if (result.success) {
+          const user = result.user;
+          let welcomeMessage = 'Welcome Client';
+          let redirectUrl = 'index.html';
+          
+          if (user.usertype === 'Admin') {
+            welcomeMessage = 'Welcome Admin';
+            redirectUrl = '/admin/index.html';
+          } else if (user.usertype === 'Incharge') {
+            welcomeMessage = 'Welcome Incharge';
+            redirectUrl = '/admin/index.html';
+          }
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Login Successful',
+            text: welcomeMessage,
+            confirmButtonText: 'Continue',
+            confirmButtonColor: '#084466',
+            allowOutsideClick: false,
+            timer: 1500,
+            timerProgressBar: true
+          }).then((result) => {
+            // Always redirect, regardless of how the alert was dismissed
+            console.log('Redirecting to:', redirectUrl);
+            // Store a flag to trigger navigation update after redirect
+            sessionStorage.setItem('justLoggedIn', 'true');
+            window.location.href = redirectUrl;
+          }).catch((error) => {
+            // Fallback redirect in case of any error
+            console.error('Redirect error:', error);
+            sessionStorage.setItem('justLoggedIn', 'true');
+            window.location.href = redirectUrl;
+          });
+          
+          // Additional fallback - redirect after a short delay
+          setTimeout(() => {
+            if (window.location.pathname.includes('login.html')) {
+              console.log('Fallback redirect to:', redirectUrl);
+              sessionStorage.setItem('justLoggedIn', 'true');
+              window.location.href = redirectUrl;
+            }
+          }, 2000);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: result.message || 'Incorrect email or password',
+            confirmButtonText: 'Try Again',
+            confirmButtonColor: '#084466'
+          });
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred. Please try again.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    });
+    
+    // Store registration data temporarily
+    let registrationData = null;
+    let forgotPasswordEmail = null;
+    let verifiedForgotPasswordOtp = null; // Store verified OTP for password reset
+
+    // Password Strength Checker - Make globally accessible
+    window.checkPasswordStrength = function() {
+      try {
+        const passwordEl = document.getElementById('regPassword');
+        if (!passwordEl) return;
+        
+        const password = passwordEl.value;
+        const meter = document.getElementById('passwordStrengthMeter');
+        const strengthText = document.getElementById('strengthText');
+        const bars = [
+          document.getElementById('strengthBar1'),
+          document.getElementById('strengthBar2'),
+          document.getElementById('strengthBar3'),
+          document.getElementById('strengthBar4')
+        ];
+        
+        if (!meter || !strengthText) return;
+        
+        if (password.length === 0) {
+          meter.style.display = 'none';
+          return;
+        }
+        
+        meter.style.display = 'block';
+      
+        // Reset all bars
+        bars.forEach(bar => {
+          if (bar) {
+            bar.className = '';
+            bar.style.backgroundColor = '#e0e0e0';
+          }
+        });
+        
+        let strength = 0;
+        let strengthLabel = '';
+        let strengthClass = '';
+        
+        // Length check
+        if (password.length >= 8) strength++;
+        if (password.length >= 12) strength++;
+        
+        // Character variety checks
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z\d]/.test(password)) strength++;
+        
+        // Determine strength level
+        if (strength <= 2) {
+          strengthLabel = 'Weak';
+          strengthClass = 'strength-weak';
+          if (bars[0]) bars[0].classList.add(strengthClass);
+          strengthText.textContent = 'Password is weak. Use at least 8 characters with mix of letters, numbers, and symbols.';
+          strengthText.style.color = '#dc3545';
+        } else if (strength === 3) {
+          strengthLabel = 'Fair';
+          strengthClass = 'strength-fair';
+          if (bars[0]) bars[0].classList.add(strengthClass);
+          if (bars[1]) bars[1].classList.add(strengthClass);
+          strengthText.textContent = 'Password is fair. Consider adding more characters or special characters.';
+          strengthText.style.color = '#ffc107';
+        } else if (strength === 4) {
+          strengthLabel = 'Good';
+          strengthClass = 'strength-good';
+          if (bars[0]) bars[0].classList.add(strengthClass);
+          if (bars[1]) bars[1].classList.add(strengthClass);
+          if (bars[2]) bars[2].classList.add(strengthClass);
+          strengthText.textContent = 'Password is good.';
+          strengthText.style.color = '#17a2b8';
+        } else {
+          strengthLabel = 'Strong';
+          strengthClass = 'strength-strong';
+          bars.forEach(bar => {
+            if (bar) bar.classList.add(strengthClass);
+          });
+          strengthText.textContent = 'Password is strong!';
+          strengthText.style.color = '#28a745';
+        }
+      } catch (error) {
+        console.error('Error in checkPasswordStrength:', error);
+      }
+    };
+    
+    // Password Match Checker - Make globally accessible
+    window.checkPasswordMatch = function() {
+      try {
+        const passwordEl = document.getElementById('regPassword');
+        const confirmPasswordEl = document.getElementById('regConfirmPassword');
+        const matchText = document.getElementById('passwordMatchText');
+        
+        if (!passwordEl || !confirmPasswordEl || !matchText) return;
+        
+        const password = passwordEl.value;
+        const confirmPassword = confirmPasswordEl.value;
+        
+        if (confirmPassword.length === 0) {
+          matchText.style.display = 'none';
+          return;
+        }
+        
+        matchText.style.display = 'block';
+        
+        if (password === confirmPassword) {
+          matchText.textContent = '✓ Passwords match';
+          matchText.className = 'match';
+        } else {
+          matchText.textContent = '✗ Passwords do not match';
+          matchText.className = 'mismatch';
+        }
+      } catch (error) {
+        console.error('Error in checkPasswordMatch:', error);
+      }
+    };
+
+    // Handle register button click - Step 1: Send OTP
+    const handleRegister = async () => {
+      const fname = document.getElementById('regFname').value.trim();
+      const lname = document.getElementById('regLname').value.trim();
+      const username = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      
+      // Validate required fields
+      if (!fname || !lname || !username || !email || !password || !confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: 'Please fill in all required fields',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      // Validate password match
+      if (password !== confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Password Mismatch',
+          text: 'Passwords do not match. Please check and try again.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      // Validate password length
+      if (password.length < 4) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Password Too Short',
+          text: 'Password must be at least 4 characters long.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      // Store registration data
+      registrationData = { fname, lname, username, email, password };
+      
+      // Show loading state
+      Swal.fire({
+        title: 'Sending verification code...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        const response = await fetch(`${auth.apiBase}/auth/send_otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, purpose: 'registration' })
+        });
+        
+        const result = await response.json();
+        
+        Swal.close();
+        
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'OTP Sent',
+            text: 'Please check your email for the verification code',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#084466'
+          }).then(() => {
+            // Switch to OTP verification
+            document.getElementById('signUp').style.display = 'none';
+            document.getElementById('otpVerification').style.display = 'block';
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to Send OTP',
+            text: result.message || 'Failed to send verification code. Please try again.',
+            confirmButtonText: 'Try Again',
+            confirmButtonColor: '#084466'
+          });
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('Send OTP error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred. Please try again.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    };
+    
+    // Attach event listeners
+    const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+    if (registerSubmitBtn) {
+      registerSubmitBtn.addEventListener('click', handleRegister);
+    }
+    
+    // Also handle form submit as fallback
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleRegister();
+    });
+
+    // Handle OTP verification - Step 2: Verify OTP and Register
+    document.getElementById('otpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      let otp = document.getElementById('otpCode').value.trim().replace(/\D/g, ''); // Remove non-digits
+      
+      // Validate OTP length
+      if (otp.length !== 6) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid OTP',
+          text: 'OTP must be exactly 6 digits.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      if (!registrationData) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Registration data not found. Please start over.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      // Show loading state
+      Swal.fire({
+        title: 'Verifying...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        // First verify OTP
+        const verifyResponse = await fetch(`${auth.apiBase}/auth/verify_otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            email: registrationData.email, 
+            otp, 
+            purpose: 'registration' 
+          })
+        });
+        
+        const verifyResult = await verifyResponse.json();
+        
+        if (!verifyResult.success) {
+          Swal.close();
+          Swal.fire({
+            icon: 'error',
+            title: 'Verification Failed',
+            text: verifyResult.message || 'Invalid OTP. Please try again.',
+            confirmButtonText: 'Try Again',
+            confirmButtonColor: '#084466'
+          });
+          return;
+        }
+        
+        // OTP verified, now register
+        const result = await auth.register(
+          registrationData.fname, 
+          registrationData.lname, 
+          registrationData.username, 
+          registrationData.email, 
+          registrationData.password,
+          otp
+        );
+        
+        Swal.close();
+        
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Account created successfully!',
+            confirmButtonText: 'Continue to Login',
+            confirmButtonColor: '#084466',
+            allowOutsideClick: false,
+            timer: 3000,
+            timerProgressBar: true
+          }).then((result) => {
+            if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
+              // Switch to login form
+              document.getElementById('otpVerification').style.display = 'none';
+              document.getElementById('signIn').style.display = 'block';
+              // Clear forms
+              document.getElementById('registerForm').reset();
+              document.getElementById('otpForm').reset();
+              registrationData = null;
+            }
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: result.message || 'Failed to create account. Please try again.',
+            confirmButtonText: 'Try Again',
+            confirmButtonColor: '#084466'
+          });
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('Register error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred. Please try again.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    });
+
+    // Resend OTP for registration
+    document.getElementById('resendOtp').addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      if (!registrationData) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Registration data not found.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      Swal.fire({
+        title: 'Resending OTP...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        const response = await fetch(`${auth.apiBase}/auth/send_otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: registrationData.email, purpose: 'registration' })
+        });
+        
+        const result = await response.json();
+        
+        Swal.close();
+        
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'OTP Resent',
+            text: 'A new verification code has been sent to your email',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#084466',
+            timer: 2000
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed',
+            text: result.message || 'Failed to resend OTP. Please try again.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#084466'
+          });
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('Resend OTP error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    });
+
+    // Back to register
+    document.getElementById('backToRegister').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('otpVerification').style.display = 'none';
+      document.getElementById('signUp').style.display = 'block';
+    });
+
+    // Forgot Password Link
+    document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('signIn').style.display = 'none';
+      document.getElementById('forgotPassword').style.display = 'block';
+    });
+
+    // Handle forgot password form
+    document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('forgotEmail').value.trim();
+      forgotPasswordEmail = email;
+      
+      Swal.fire({
+        title: 'Sending OTP...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        const response = await fetch(`${auth.apiBase}/auth/forgot_password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+        
+        const result = await response.json();
+        
+        Swal.close();
+        
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'OTP Sent',
+            text: 'If the email exists, a verification code has been sent',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#084466'
+          }).then(() => {
+            document.getElementById('forgotPassword').style.display = 'none';
+            document.getElementById('forgotPasswordOtpVerification').style.display = 'block';
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: result.message || 'Failed to send OTP',
+            confirmButtonText: 'Try Again',
+            confirmButtonColor: '#084466'
+          });
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('Forgot password error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    });
+
+    // Handle OTP verification for forgot password
+    document.getElementById('forgotPasswordOtpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      let otp = document.getElementById('forgotPasswordOtpCode').value.trim().replace(/\D/g, ''); // Remove non-digits
+      
+      // Validate OTP length
+      if (otp.length !== 6) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid OTP',
+          text: 'OTP must be exactly 6 digits.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      if (!forgotPasswordEmail) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Email not found. Please start over.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      Swal.fire({
+        title: 'Verifying...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        // Verify OTP
+        const verifyResponse = await fetch(`${auth.apiBase}/auth/verify_otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            email: forgotPasswordEmail, 
+            otp, 
+            purpose: 'password_reset' 
+          })
+        });
+        
+        const verifyResult = await verifyResponse.json();
+        
+        Swal.close();
+        
+        if (verifyResult.success) {
+          // Store verified OTP (ensure it's 6 digits with leading zeros)
+          verifiedForgotPasswordOtp = otp.padStart(6, '0');
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'OTP Verified',
+            text: 'Please enter your new password',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#084466',
+            timer: 2000
+          }).then(() => {
+            document.getElementById('forgotPasswordOtpVerification').style.display = 'none';
+            document.getElementById('resetPassword').style.display = 'block';
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Verification Failed',
+            text: verifyResult.message || 'Invalid OTP. Please try again.',
+            confirmButtonText: 'Try Again',
+            confirmButtonColor: '#084466'
+          });
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('OTP verification error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    });
+
+    // Handle reset password form (after OTP is verified)
+    document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (newPassword !== confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Password Mismatch',
+          text: 'New password and confirm password do not match',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      if (!forgotPasswordEmail || !verifiedForgotPasswordOtp) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Session expired. Please start over.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        }).then(() => {
+          document.getElementById('resetPassword').style.display = 'none';
+          document.getElementById('forgotPassword').style.display = 'block';
+          forgotPasswordEmail = null;
+          verifiedForgotPasswordOtp = null;
+        });
+        return;
+      }
+      
+      Swal.fire({
+        title: 'Resetting password...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        // Reset password (OTP already verified)
+        const response = await fetch(`${auth.apiBase}/auth/reset_password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            email: forgotPasswordEmail, 
+            otp: verifiedForgotPasswordOtp ? verifiedForgotPasswordOtp.padStart(6, '0') : '', 
+            new_password: newPassword 
+          })
+        });
+        
+        const result = await response.json();
+        
+        Swal.close();
+        
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Password Reset',
+            text: 'Your password has been reset successfully!',
+            confirmButtonText: 'Continue to Login',
+            confirmButtonColor: '#084466',
+            allowOutsideClick: false
+          }).then(() => {
+            document.getElementById('resetPassword').style.display = 'none';
+            document.getElementById('signIn').style.display = 'block';
+            document.getElementById('forgotPasswordForm').reset();
+            document.getElementById('forgotPasswordOtpForm').reset();
+            document.getElementById('resetPasswordForm').reset();
+            forgotPasswordEmail = null;
+            verifiedForgotPasswordOtp = null;
+          });
+        } else {
+          // Show specific error message
+          let errorMessage = result.message || 'Failed to reset password';
+          
+          // If OTP issue, suggest going back to verify again
+          if (errorMessage.includes('OTP') || errorMessage.includes('unverified')) {
+            errorMessage += ' Please verify your OTP again.';
+          }
+          
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed',
+            text: errorMessage,
+            confirmButtonText: 'Try Again',
+            confirmButtonColor: '#084466'
+          }).then(() => {
+            // If OTP issue, go back to OTP verification
+            if (errorMessage.includes('OTP') || errorMessage.includes('unverified')) {
+              document.getElementById('resetPassword').style.display = 'none';
+              document.getElementById('forgotPasswordOtpVerification').style.display = 'block';
+              verifiedForgotPasswordOtp = null; // Clear verified OTP
+            }
+          });
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('Reset password error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    });
+
+    // Resend OTP for forgot password
+    document.getElementById('resendForgotPasswordOtp').addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      if (!forgotPasswordEmail) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Email not found.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      Swal.fire({
+        title: 'Resending OTP...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      try {
+        const response = await fetch(`${auth.apiBase}/auth/forgot_password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: forgotPasswordEmail })
+        });
+        
+        const result = await response.json();
+        
+        Swal.close();
+        
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'OTP Resent',
+            text: 'A new verification code has been sent to your email',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#084466',
+            timer: 2000
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed',
+            text: result.message || 'Failed to resend OTP',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#084466'
+          });
+        }
+      } catch (error) {
+        Swal.close();
+        console.error('Resend OTP error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+      }
+    });
+
+    // Back to forgot password from OTP verification
+    document.getElementById('backToForgotPasswordFromOtp').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('forgotPasswordOtpVerification').style.display = 'none';
+      document.getElementById('forgotPassword').style.display = 'block';
+    });
+
+    // Back to OTP verification from password reset
+    document.getElementById('backToForgotPasswordOtp').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('resetPassword').style.display = 'none';
+      document.getElementById('forgotPasswordOtpVerification').style.display = 'block';
+    });
+
+    // Back to login
+    document.getElementById('backToLogin').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('forgotPassword').style.display = 'none';
+      document.getElementById('signIn').style.display = 'block';
+      forgotPasswordEmail = null;
+      verifiedForgotPasswordOtp = null;
+    });
+  </script>
+</body>
+
+</html>
