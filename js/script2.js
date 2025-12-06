@@ -6,7 +6,6 @@ const otpVerification = document.getElementById('otpVerification');
 const forgotPassword = document.getElementById('forgotPassword');
 const resetPassword = document.getElementById('resetPassword');
 
-// Hide all forms except the one to show
 function hideAllForms() {
   signInForm.style.display = "none";
   signUpForm.style.display = "none";
@@ -26,3 +25,4 @@ signInButton.addEventListener('click',function(){
   hideAllForms();
   signInForm.style.display="block";
 })
+

@@ -1,34 +1,14 @@
-/**
- * Layout Loader - Dynamically loads header, footer, and navigation layouts
- * This allows updates to layouts to be reflected across all pages
- */
 const LayoutLoader = {
     basePath: '',
     
-    /**
-     * Initialize the layout loader
-     */
     async init() {
-        // Set base path to root (using absolute paths now)
         this.basePath = '/';
-        
-        // Load layouts
         await this.loadLayouts();
     },
     
-    /**
-     * Get the full path to a layout file
-     */
     getLayoutPath(layoutName) {
-        // Use absolute path with repository name for GitHub Pages
-        // For GitHub Pages: /MaximusHotel/layouts/
-        // For local development: /layouts/ (if needed)
         return `/MaximusHotel/layouts/${layoutName}`;
     },
-    
-    /**
-     * Load head content from header.html
-     */
     async loadHead() {
         try {
             const layoutPath = this.getLayoutPath('header.html');
@@ -42,12 +22,10 @@ const LayoutLoader = {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
-            // Get all elements from the parsed document (header.html contains just head elements)
-            const headElements = doc.querySelectorAll('*');
+                        const headElements = doc.querySelectorAll('*');
             const currentHead = document.head;
             
-            // Add head elements from layout (skip if already exists)
-            headElements.forEach(element => {
+                        headElements.forEach(element => {
                 if (element.tagName === 'TITLE') {
                     const existingTitle = document.querySelector('title');
                     if (existingTitle) {
@@ -69,8 +47,7 @@ const LayoutLoader = {
                         currentHead.appendChild(element.cloneNode(true));
                     }
                 } else if (element.tagName === 'SCRIPT') {
-                    // For scripts, always add them
-                    const newScript = document.createElement('script');
+                                        const newScript = document.createElement('script');
                     if (element.src) {
                         newScript.src = element.src;
                     } else {
@@ -94,8 +71,7 @@ const LayoutLoader = {
      */
     async loadLayout(layoutName, placeholderId) {
         try {
-            // Use simple relative path - browser will resolve it correctly
-            const layoutPath = this.getLayoutPath(layoutName);
+                        const layoutPath = this.getLayoutPath(layoutName);
             
             console.log(`Loading layout from: ${layoutPath} (current path: ${window.location.pathname})`); // Debug
             const response = await fetch(layoutPath);
@@ -111,8 +87,7 @@ const LayoutLoader = {
             if (placeholder) {
                 placeholder.innerHTML = html;
                 
-                // Execute any scripts in the loaded HTML
-                const scripts = placeholder.querySelectorAll('script');
+                                const scripts = placeholder.querySelectorAll('script');
                 scripts.forEach(oldScript => {
                     const newScript = document.createElement('script');
                     Array.from(oldScript.attributes).forEach(attr => {
@@ -122,10 +97,8 @@ const LayoutLoader = {
                     oldScript.parentNode.replaceChild(newScript, oldScript);
                 });
                 
-                // Re-initialize mobile menu after layout is loaded
-                if (layoutName === 'mobilenav.html' && typeof jQuery !== 'undefined') {
-                    // Re-initialize slicknav for mobile menu
-                    setTimeout(() => {
+                                if (layoutName === 'mobilenav.html' && typeof jQuery !== 'undefined') {
+                                        setTimeout(() => {
                         if (jQuery('.mobile-menu').length && typeof jQuery.fn.slicknav !== 'undefined') {
                             jQuery('.mobile-menu').slicknav({
                                 prependTo: '#mobile-menu-wrap',
@@ -150,8 +123,7 @@ const LayoutLoader = {
      * Update navigation based on authentication
      */
     async updateNavigation() {
-        // Wait for auth to be available - retry if not ready
-        let retries = 0;
+                let retries = 0;
         while (typeof auth === 'undefined' && retries < 10) {
             await new Promise(resolve => setTimeout(resolve, 100));
             retries++;
@@ -162,8 +134,7 @@ const LayoutLoader = {
             return;
         }
         
-        // Wait for navigation elements to exist - they're loaded dynamically
-        let elementRetries = 0;
+                let elementRetries = 0;
         while ((!document.getElementById('navProfile') || !document.getElementById('mobileProfile')) && elementRetries < 20) {
             await new Promise(resolve => setTimeout(resolve, 100));
             elementRetries++;
@@ -176,7 +147,6 @@ const LayoutLoader = {
         const mobileLoginNav = document.getElementById('mobileLogin');
         const mobileLogoutLink = document.getElementById('mobileLogout');
         
-        // Debug: Check if elements exist
         console.log('Navigation update - Elements found:', {
             profileNav: !!profileNav,
             loginNav: !!loginNav,
@@ -189,13 +159,11 @@ const LayoutLoader = {
         if (auth.isAuthenticated()) {
             const result = await auth.verifyToken();
             if (result.success) {
-                // User is authenticated
-                console.log('User authenticated:', result.user.usertype);
+                                console.log('User authenticated:', result.user.usertype);
                 if (profileNav) {
                     profileNav.style.display = '';
                     console.log('Profile nav shown');
-                    // Update profile image
-                    this.updateProfileImage(result.user);
+                                        this.updateProfileImage(result.user);
                 } else {
                     console.warn('navProfile element not found - will retry');
                     // Retry once more after a delay
@@ -204,8 +172,7 @@ const LayoutLoader = {
                         if (retryProfileNav) {
                             retryProfileNav.style.display = '';
                             console.log('Profile nav shown on retry');
-                            // Update profile image on retry
-                            this.updateProfileImage(result.user);
+                                                        this.updateProfileImage(result.user);
                         }
                     }, 500);
                 }
@@ -216,8 +183,7 @@ const LayoutLoader = {
                 if (mobileProfileNav) {
                     mobileProfileNav.style.display = '';
                     console.log('Mobile profile nav shown');
-                    // Update mobile profile image
-                    this.updateProfileImage(result.user, true);
+                                        this.updateProfileImage(result.user, true);
                 } else {
                     console.warn('mobileProfile element not found - will retry');
                     // Retry once more after a delay
@@ -226,14 +192,12 @@ const LayoutLoader = {
                         if (retryMobileProfileNav) {
                             retryMobileProfileNav.style.display = '';
                             console.log('Mobile profile nav shown on retry');
-                            // Update mobile profile image on retry
-                            this.updateProfileImage(result.user, true);
+                                                        this.updateProfileImage(result.user, true);
                         }
                     }, 500);
                 }
                 
-                // Show and update mobile profile bottom section
-                const mobileProfileBottom = document.getElementById('mobileProfileBottom');
+                                const mobileProfileBottom = document.getElementById('mobileProfileBottom');
                 if (mobileProfileBottom) {
                     mobileProfileBottom.style.display = 'block';
                     this.updateMobileProfileBottom(result.user);
@@ -243,8 +207,7 @@ const LayoutLoader = {
                     console.log('Mobile login nav hidden');
                 }
                 
-                // Set up logout handlers
-                if (logoutLink) {
+                                if (logoutLink) {
                     logoutLink.addEventListener('click', async (e) => {
                         e.preventDefault();
                         await auth.logout();
@@ -286,7 +249,6 @@ const LayoutLoader = {
                     });
                 }
                 
-                // Redirect Admin/Incharge users to their dashboards (only on index.html)
                 const currentPage = window.location.pathname.split('/').pop() || 'index.html';
                 if (currentPage === 'index.html') {
                     const user = result.user;
@@ -298,38 +260,30 @@ const LayoutLoader = {
                         return;
                     }
                 }
-                // Client users can stay on the landing page
             } else {
-                // Token invalid
                 if (profileNav) profileNav.style.display = 'none';
                 if (loginNav) loginNav.style.display = '';
                 if (mobileProfileNav) mobileProfileNav.style.display = 'none';
                 if (mobileLoginNav) mobileLoginNav.style.display = '';
                 
-                // Hide mobile profile bottom section
-                const mobileProfileBottom = document.getElementById('mobileProfileBottom');
+                                const mobileProfileBottom = document.getElementById('mobileProfileBottom');
                 if (mobileProfileBottom) {
                     mobileProfileBottom.style.display = 'none';
                 }
             }
         } else {
-            // Not authenticated
             if (profileNav) profileNav.style.display = 'none';
             if (loginNav) loginNav.style.display = '';
             if (mobileProfileNav) mobileProfileNav.style.display = 'none';
             if (mobileLoginNav) mobileLoginNav.style.display = '';
             
-            // Hide mobile profile bottom section
-            const mobileProfileBottom = document.getElementById('mobileProfileBottom');
+                        const mobileProfileBottom = document.getElementById('mobileProfileBottom');
             if (mobileProfileBottom) {
                 mobileProfileBottom.style.display = 'none';
             }
         }
     },
     
-    /**
-     * Update profile image in navigation
-     */
     updateProfileImage(userData, isMobile = false) {
         if (!userData) return;
         
@@ -340,13 +294,11 @@ const LayoutLoader = {
         const profileIcon = document.getElementById(iconId);
         
         if (profileImage && profileIcon) {
-            // Use CONFIG to get backend URL for profile images
-            let imageUrl;
+                        let imageUrl;
             if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
                 imageUrl = CONFIG.getProfileImageUrl(userData.image);
             } else {
-                // Fallback to backend URL
-                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
                 imageUrl = userData.image && userData.image.trim() 
                     ? `${backendUrl}/profile_img/${userData.image}`
                     : `${backendUrl}/profile_img/default.jpg`;
@@ -355,17 +307,13 @@ const LayoutLoader = {
             profileImage.style.display = 'block';
             profileIcon.style.display = 'none';
             
-            // Add error handler to fallback to icon if image fails to load
-            profileImage.onerror = function() {
+                        profileImage.onerror = function() {
                 this.style.display = 'none';
                 if (profileIcon) profileIcon.style.display = 'inline-block';
             };
         }
     },
     
-    /**
-     * Update mobile profile bottom section
-     */
     updateMobileProfileBottom(userData) {
         if (!userData) return;
         
@@ -374,15 +322,12 @@ const LayoutLoader = {
         const profileName = document.getElementById('mobileProfileBottomName');
         const profileEmail = document.getElementById('mobileProfileBottomEmail');
         
-        // Update profile image/icon
-        if (profileImage && profileIcon) {
-            // Use CONFIG to get backend URL for profile images
-            let imageUrl;
+                if (profileImage && profileIcon) {
+                        let imageUrl;
             if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
                 imageUrl = CONFIG.getProfileImageUrl(userData.image);
             } else {
-                // Fallback to backend URL
-                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
                 imageUrl = userData.image && userData.image.trim() 
                     ? `${backendUrl}/profile_img/${userData.image}`
                     : `${backendUrl}/profile_img/default.jpg`;
@@ -391,15 +336,13 @@ const LayoutLoader = {
             profileImage.style.display = 'block';
             profileIcon.style.display = 'none';
             
-            // Add error handler to fallback to icon if image fails to load
-            profileImage.onerror = function() {
+                        profileImage.onerror = function() {
                 this.style.display = 'none';
                 if (profileIcon) profileIcon.style.display = 'block';
             };
         }
         
-        // Update name and email
-        if (profileName) {
+                if (profileName) {
             const fullName = `${userData.fname || ''} ${userData.lname || ''}`.trim() || 'User';
             profileName.textContent = fullName;
         }
@@ -416,27 +359,20 @@ const LayoutLoader = {
         // Note: Head content (CSS) should be in HTML file directly for proper rendering
         // Only load navigation and footer dynamically
         
-        // Load mobile navigation
-        await this.loadLayout('mobilenav.html', 'layout-mobilenav-placeholder');
+                await this.loadLayout('mobilenav.html', 'layout-mobilenav-placeholder');
         
-        // Load navbar
-        await this.loadLayout('navbar.html', 'layout-navbar-placeholder');
+                await this.loadLayout('navbar.html', 'layout-navbar-placeholder');
         
-        // Load footer (includes scripts)
-        await this.loadLayout('footer.html', 'layout-footer-placeholder');
+                await this.loadLayout('footer.html', 'layout-footer-placeholder');
         
-        // Set active navigation item
-        this.setActiveNav();
+                this.setActiveNav();
         
-        // Update navigation based on authentication (after layouts are loaded)
-        // Wait for DOM to be ready and scripts to execute
-        // If user just logged in, wait a bit longer and retry
+                        // If user just logged in, wait a bit longer and retry
         const justLoggedIn = sessionStorage.getItem('justLoggedIn');
         const delay = justLoggedIn ? 800 : 500;
         
         setTimeout(() => {
             this.updateNavigation().then(() => {
-                // Clear the flag after navigation is updated
                 if (justLoggedIn) {
                     sessionStorage.removeItem('justLoggedIn');
                 }
@@ -444,9 +380,6 @@ const LayoutLoader = {
         }, delay);
     },
     
-    /**
-     * Set active navigation item based on current page
-     */
     setActiveNav() {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         const navItems = document.querySelectorAll('.mainmenu a, .mobile-menu a');
@@ -462,7 +395,6 @@ const LayoutLoader = {
     }
 };
 
-// Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         LayoutLoader.init();
@@ -471,7 +403,7 @@ if (document.readyState === 'loading') {
     LayoutLoader.init();
 }
 
-// Expose updateNavigation globally so it can be called manually if needed
 window.updateNavigation = () => {
     LayoutLoader.updateNavigation();
 };
+

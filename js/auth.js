@@ -1,16 +1,11 @@
-// Authentication utility for token management and API calls
-
 class Auth {
     constructor() {
         this.tokenKey = 'auth_token';
         this.userKey = 'user_data';
         
-        // Load API base URL from config
-        // Check if CONFIG is available (config.js should be loaded before this file)
         if (typeof CONFIG !== 'undefined' && CONFIG.getApiBaseUrl) {
             this.apiBase = CONFIG.getApiBaseUrl();
         } else {
-            // Fallback: use Hostinger URL for GitHub Pages
             this.apiBase = 'https://hotelmaximus.bytevortexz.com/api';
             console.warn('CONFIG not found, using default Hostinger API URL');
         }
@@ -18,12 +13,10 @@ class Auth {
         console.log('API Base URL:', this.apiBase);
     }
 
-    // Test API access (for debugging)
     async testApiAccess() {
         try {
             const testUrl = this.apiBase + '/auth/verify';
             console.log('Testing API access to:', testUrl);
-            // Just log, don't actually call it here to avoid unnecessary requests
         } catch (error) {
             console.error('API test error:', error);
         }
@@ -34,8 +27,7 @@ class Auth {
         return localStorage.getItem(this.tokenKey);
     }
 
-    // Set token
-    setToken(token) {
+        setToken(token) {
         localStorage.setItem(this.tokenKey, token);
     }
 
@@ -51,13 +43,11 @@ class Auth {
         return userData ? JSON.parse(userData) : null;
     }
 
-    // Set user data
-    setUser(user) {
+        setUser(user) {
         localStorage.setItem(this.userKey, JSON.stringify(user));
     }
 
-    // Check if user is authenticated
-    isAuthenticated() {
+        isAuthenticated() {
         return this.getToken() !== null;
     }
 
@@ -110,7 +100,7 @@ class Auth {
         this.removeToken();
     }
 
-    // Register (now requires OTP)
+    // Register (requires OTP)
     async register(fname, lname, username, email, password, otp) {
         try {
             const response = await fetch(`${this.apiBase}/auth/register`, {
@@ -199,8 +189,7 @@ class Auth {
             throw new Error('No authentication token found');
         }
 
-        // Don't set Content-Type for FormData, browser will set it automatically with boundary
-        const isFormData = options.body instanceof FormData;
+                const isFormData = options.body instanceof FormData;
         
         const defaultOptions = {
             headers: {
@@ -212,8 +201,7 @@ class Auth {
 
         // Remove leading slash from endpoint if present to avoid double slashes
         const cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-        // Ensure apiBase has leading slash and endpoint doesn't
-        const apiBase = this.apiBase.endsWith('/') ? this.apiBase.slice(0, -1) : this.apiBase;
+                const apiBase = this.apiBase.endsWith('/') ? this.apiBase.slice(0, -1) : this.apiBase;
         const url = `${apiBase}/${cleanEndpoint}`;
         
         console.log('API Call - apiBase:', apiBase, 'endpoint:', cleanEndpoint, 'full URL:', url);
@@ -229,4 +217,5 @@ class Auth {
 
 // Create global auth instance
 const auth = new Auth();
+
 

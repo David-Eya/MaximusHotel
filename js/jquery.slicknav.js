@@ -477,8 +477,7 @@
         }
     };
 
-    // set attributes of element and children based on visibility
-    Plugin.prototype._setVisAttr = function(el, hidden) {
+        Plugin.prototype._setVisAttr = function(el, hidden) {
         var $this = this;
 
         // select all parents that aren't hidden
@@ -504,8 +503,7 @@
         }
     };
 
-    // get all 1st level items that are clickable
-    Plugin.prototype._getActionItems = function(el) {
+        Plugin.prototype._getActionItems = function(el) {
         var data = el.data("menu");
         if (!data) {
             data = {};
@@ -582,3 +580,4 @@
         }
     };
 }(jQuery, document, window));
+

@@ -1,24 +1,14 @@
-/**
- * Admin API Client - Handles all admin API calls
- */
 class AdminAPI {
     constructor() {
-        // Load API base URL from config
-        // Check if CONFIG is available (config.js should be loaded before this file)
         if (typeof CONFIG !== 'undefined' && CONFIG.getApiBaseUrl) {
             this.apiBase = CONFIG.getApiBaseUrl();
         } else {
-            // Fallback: use Hostinger URL for GitHub Pages
             this.apiBase = 'https://hotelmaximus.bytevortexz.com/api';
             console.warn('CONFIG not found, using default Hostinger API URL');
         }
         
         console.log('Admin API Base URL:', this.apiBase);
     }
-
-    /**
-     * Get authorization header with token
-     */
     getAuthHeaders() {
         const token = localStorage.getItem('auth_token');
         return {
@@ -409,14 +399,12 @@ class AdminAPI {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-                        // Don't set Content-Type for FormData, browser will set it with boundary
-                    },
+                                            },
                     body: formData
                 }
             );
             
-            // Check if response is OK
-            if (!response.ok) {
+                        if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Create category error response:', errorText);
                 return { success: false, message: `Server error: ${response.status} ${response.statusText}` };
@@ -456,8 +444,7 @@ class AdminAPI {
                     method: 'POST', // Use POST with _method=PUT for FormData compatibility
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-                        // Don't set Content-Type for FormData, browser will set it with boundary
-                    },
+                                            },
                     body: formData
                 }
             );
@@ -490,4 +477,5 @@ class AdminAPI {
 
 // Create global instance
 const adminAPI = new AdminAPI();
+
 

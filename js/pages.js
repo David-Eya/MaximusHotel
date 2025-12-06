@@ -23,8 +23,7 @@ const Pages = {
         return this.basePath;
     },
     
-    // Set active navigation item
-    setActiveNav(currentPage) {
+        setActiveNav(currentPage) {
         const navItems = document.querySelectorAll('.mainmenu a, .mobile-menu a');
         navItems.forEach(item => {
             const href = item.getAttribute('href');
@@ -50,8 +49,7 @@ const Pages = {
         return text.substring(0, maxLength) + '...';
     },
     
-    // Update all asset paths in the page
-    updateAssetPaths() {
+        updateAssetPaths() {
         const basePath = this.getBasePath();
         document.querySelectorAll('[data-base-path]').forEach(el => {
             const attr = el.getAttribute('data-base-path');
@@ -70,4 +68,5 @@ document.addEventListener('DOMContentLoaded', () => {
         Pages.setActiveNav(currentPage);
     });
 });
+
 

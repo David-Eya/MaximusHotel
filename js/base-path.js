@@ -6,9 +6,7 @@
     // Get the current pathname
     const pathname = window.location.pathname;
     
-    // Check if we're on GitHub Pages (pathname contains repository name)
-    // For GitHub Pages: https://username.github.io/repository-name/
-    const githubPagesMatch = pathname.match(/^\/([^\/]+)\//);
+            const githubPagesMatch = pathname.match(/^\/([^\/]+)\//);
     
     if (githubPagesMatch) {
         // We're on GitHub Pages, set base to repository root
@@ -27,4 +25,5 @@
     // If not on GitHub Pages (localhost), base tag won't be set
     // and absolute paths will work as normal
 })();
+
 
