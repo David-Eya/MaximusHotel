@@ -341,11 +341,11 @@ const LayoutLoader = {
         
         if (profileImage && profileIcon) {
             if (userData.image && userData.image.trim()) {
-                profileImage.src = `/profile_img/${userData.image}`;
+                profileImage.src = `/MaximusHotel/profile_img/${userData.image}`;
                 profileImage.style.display = 'block';
                 profileIcon.style.display = 'none';
             } else {
-                profileImage.src = '/profile_img/default.jpg';
+                profileImage.src = '/MaximusHotel/profile_img/default.jpg';
                 profileImage.style.display = 'block';
                 profileIcon.style.display = 'none';
             }
