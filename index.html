@@ -228,7 +228,9 @@
     // Load room types
     async function loadRoomTypes() {
         try {
-            const response = await fetch('https://hotelmaximus.bytevortexz.com/api/pages/get_room_types');
+            // Use CONFIG to get the API base URL
+            const apiBaseUrl = typeof CONFIG !== 'undefined' && CONFIG.getApiBaseUrl ? CONFIG.getApiBaseUrl() : 'https://hotelmaximus.bytevortexz.com/api';
+            const response = await fetch(`${apiBaseUrl}/pages/get_room_types`);
             const result = await response.json();
             
             if (result.success && result.data) {
