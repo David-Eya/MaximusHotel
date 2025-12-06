@@ -422,12 +422,19 @@
             return;
         }
 
-        // Build image URL
+        // Build image URL - use backend URL for profile images
         let imageUrl;
-        if (imageName && imageName.trim() !== '') {
-            imageUrl = '/MaximusHotel/profile_img/' + imageName;
+        let defaultImageUrl;
+        if (typeof CONFIG !== 'undefined' && CONFIG.getProfileImageUrl) {
+            imageUrl = CONFIG.getProfileImageUrl(imageName);
+            defaultImageUrl = CONFIG.getProfileImageUrl('default.jpg');
         } else {
-            imageUrl = '/MaximusHotel/profile_img/default.jpg';
+            // Fallback to backend URL
+            const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+            imageUrl = imageName && imageName.trim() && imageName !== 'default.jpg'
+                ? `${backendUrl}/profile_img/${imageName}`
+                : `${backendUrl}/profile_img/default.jpg`;
+            defaultImageUrl = `${backendUrl}/profile_img/default.jpg`;
         }
 
         console.log('Setting profile image:', imageUrl);
@@ -446,10 +453,9 @@
         };
         img.onerror = () => {
             console.error('Failed to load profile image:', imageUrl);
-            // Try default image
-            const defaultUrl = '/MaximusHotel/profile_img/default.jpg';
-            container.style.backgroundImage = `url('${defaultUrl}')`;
-            console.log('Using default image:', defaultUrl);
+            // Try default image from backend
+            container.style.backgroundImage = `url('${defaultImageUrl}')`;
+            console.log('Using default image:', defaultImageUrl);
         };
         img.src = imageUrl;
     }
@@ -739,6 +745,7 @@
 <script src="/MaximusHotel/js/jquery.slicknav.js"></script>
 <script src="/MaximusHotel/js/owl.carousel.min.js"></script>
 <script src="/MaximusHotel/js/main.js"></script>
+<script src="/MaximusHotel/js/config.js"></script>
 <script src="/MaximusHotel/js/auth.js"></script>
 <script src="/MaximusHotel/js/pages.js"></script>
 <!-- Navigation update is now handled by layout-loader.js after layouts are loaded -->
