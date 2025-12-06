@@ -25,8 +25,8 @@ const CONFIG = {
     
     getRoomImageUrl: function(imageName) {
         if (!imageName || imageName.trim() === '' || imageName === 'default.jpg') {
-            return `/MaximusHotel/img/room/default.jpg`;
+            return `${this.BACKEND_BASE_URL}/img/room/default.jpg`;
         }
-        return `/MaximusHotel/img/room/${imageName}`;
+        return `${this.BACKEND_BASE_URL}/img/room/${imageName}`;
     }
 };

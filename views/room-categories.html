@@ -195,8 +195,12 @@
                 document.getElementById('services').value = category.services || '';
                 
                 if (category.image) {
+                    // Use backend URL for room images
+                    const imageUrl = typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl 
+                        ? CONFIG.getRoomImageUrl(category.image)
+                        : `https://hotelmaximus.bytevortexz.com/img/room/${category.image}`;
                     document.getElementById('currentImage').innerHTML = `
-                        <img src="/MaximusHotel/img/room/${category.image}" alt="Current image" style="max-width: 200px; border-radius: 5px;">
+                        <img src="${imageUrl}" alt="Current image" style="max-width: 200px; border-radius: 5px;">
                     `;
                 }
             }
@@ -360,10 +364,13 @@
                 <tr>
                     <td>${category.category_id}</td>
                     <td>
-                        ${category.image ? `
-                            <img src="/MaximusHotel/img/room/${category.image}" alt="${category.category_name}" 
-                                 style="width: 80px; height: 60px; object-fit: cover; border-radius: 5px;">
-                        ` : '<span class="text-muted">No image</span>'}
+                        ${category.image ? (() => {
+                            const imageUrl = typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl 
+                                ? CONFIG.getRoomImageUrl(category.image)
+                                : `https://hotelmaximus.bytevortexz.com/img/room/${category.image}`;
+                            return `<img src="${imageUrl}" alt="${category.category_name}" 
+                                 style="width: 80px; height: 60px; object-fit: cover; border-radius: 5px;">`;
+                        })() : '<span class="text-muted">No image</span>'}
                     </td>
                     <td>${category.category_name}</td>
                     <td>₱${parseFloat(category.price || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>

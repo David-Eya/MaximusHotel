@@ -190,14 +190,19 @@
                         maximumFractionDigits: 2
                     });
                     
-                    // Ensure image path is valid
+                    // Ensure image path is valid - use backend URL
                     const roomImage = (room.image && room.image.trim()) ? room.image.trim() : 'default.jpg';
-                    const imagePath = `/MaximusHotel/img/room/${roomImage}`;
+                    const imagePath = typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl 
+                        ? CONFIG.getRoomImageUrl(roomImage)
+                        : `https://hotelmaximus.bytevortexz.com/img/room/${roomImage}`;
+                    const defaultImagePath = typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl 
+                        ? CONFIG.getRoomImageUrl('default.jpg')
+                        : 'https://hotelmaximus.bytevortexz.com/img/room/default.jpg';
                     
                     const roomHtml = `
                         <div class="col-lg-4 col-md-6">
                             <div class="room-item">
-                                <img src="${imagePath}" alt="" height="250" onerror="this.src='/MaximusHotel/img/room/default.jpg'">
+                                <img src="${imagePath}" alt="" height="250" onerror="this.src='${defaultImagePath}'">
                                 <div class="ri-text">
                                     <h4>Room ${room.room_id} (${room.category_name})</h4>
                                     <h3>₱${price}<span>/Pernight</span></h3>
