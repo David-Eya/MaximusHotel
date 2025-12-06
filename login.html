@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="/MaximusHotel/css/style2.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <style>
     .links {
       display: flex !important;
@@ -1118,6 +1119,7 @@
       
       try {
         // Reset password (OTP already verified)
+        const hashedPassword = auth.hashPassword(newPassword);
         const response = await fetch(`${auth.apiBase}/auth/reset_password`, {
           method: 'POST',
           headers: {
@@ -1126,7 +1128,7 @@
           body: JSON.stringify({ 
             email: forgotPasswordEmail, 
             otp: verifiedForgotPasswordOtp ? verifiedForgotPasswordOtp.padStart(6, '0') : '', 
-            new_password: newPassword 
+            new_password: hashedPassword
           })
         });
         

@@ -13,6 +13,15 @@ class Auth {
         console.log('API Base URL:', this.apiBase);
     }
 
+    hashPassword(password) {
+        if (typeof CryptoJS !== 'undefined') {
+            return CryptoJS.SHA256(password).toString();
+        } else {
+            console.error('CryptoJS not loaded. Password will be sent unhashed.');
+            return password;
+        }
+    }
+
     async testApiAccess() {
         try {
             const testUrl = this.apiBase + '/auth/verify';
@@ -54,12 +63,13 @@ class Auth {
     // Login
     async login(email, password) {
         try {
+            const hashedPassword = this.hashPassword(password);
             const response = await fetch(`${this.apiBase}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password: hashedPassword })
             });
 
             const data = await response.json();
@@ -103,12 +113,13 @@ class Auth {
     // Register (requires OTP)
     async register(fname, lname, username, email, password, otp) {
         try {
+            const hashedPassword = this.hashPassword(password);
             const response = await fetch(`${this.apiBase}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ fname, lname, username, email, password, otp })
+                body: JSON.stringify({ fname, lname, username, email, password: hashedPassword, otp })
             });
 
             const data = await response.json();

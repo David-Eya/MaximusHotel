@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/MaximusHotel/css/admin.css">
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body class="profile-page">
     <div class="sidebar">
@@ -428,8 +429,8 @@
                 const response = await auth.apiCall('profile/update-password', {
                     method: 'POST',
                     body: JSON.stringify({
-                        current_password: currentPassword,
-                        new_password: newPassword
+                        current_password: auth.hashPassword(currentPassword),
+                        new_password: auth.hashPassword(newPassword)
                     })
                 });
                 const data = await response.json();

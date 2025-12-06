@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="/MaximusHotel/css/style.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         /* Profile Image Styles */
         .profile-image-wrapper {
@@ -614,9 +615,9 @@
         e.preventDefault();
 
         const formData = {
-            oldpass: document.getElementById('oldpass').value,
-            newpass: document.getElementById('newpass').value,
-            confirmpass: document.getElementById('confirmpass').value
+            oldpass: auth.hashPassword(document.getElementById('oldpass').value),
+            newpass: auth.hashPassword(document.getElementById('newpass').value),
+            confirmpass: auth.hashPassword(document.getElementById('confirmpass').value)
         };
 
         try {
