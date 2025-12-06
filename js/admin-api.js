@@ -8,8 +8,9 @@ class AdminAPI {
         if (typeof CONFIG !== 'undefined' && CONFIG.getApiBaseUrl) {
             this.apiBase = CONFIG.getApiBaseUrl();
         } else {
-            // Fallback: use relative path for local development
-            this.apiBase = '/api';
+            // Fallback: use Hostinger URL for GitHub Pages
+            this.apiBase = 'https://hotelmaximus.bytevortexz.com/api';
+            console.warn('CONFIG not found, using default Hostinger API URL');
         }
         
         console.log('Admin API Base URL:', this.apiBase);
