@@ -14,12 +14,26 @@ class Auth {
     }
 
     hashPassword(password) {
+        if (!password) {
+            return password;
+        }
+        
         if (typeof CryptoJS !== 'undefined') {
+            if (this.isAlreadyHashed(password)) {
+                return password;
+            }
             return CryptoJS.SHA256(password).toString();
         } else {
             console.error('CryptoJS not loaded. Password will be sent unhashed.');
             return password;
         }
+    }
+    
+    isAlreadyHashed(password) {
+        if (!password || typeof password !== 'string') {
+            return false;
+        }
+        return password.length === 64 && /^[a-f0-9]{64}$/i.test(password);
     }
 
     async testApiAccess() {
