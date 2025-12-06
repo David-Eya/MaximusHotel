@@ -487,6 +487,14 @@
             const users = usersResult.data || usersResult.users || [];
             const userToDelete = users.find(u => u.userid == userid);
             
+            if (!userToDelete) {
+                Toast.fire({ icon: 'error', title: 'User not found' });
+                return;
+            }
+            
+            // Get user's full name
+            const userName = `${userToDelete.fname || ''} ${userToDelete.midname || ''} ${userToDelete.lname || ''}`.trim() || userToDelete.username || 'User';
+            
             let warningText = 'This action cannot be undone!';
             if (userToDelete && userToDelete.usertype === 'Admin') {
                 const adminCount = users.filter(u => u.usertype === 'Admin').length || 0;
@@ -504,7 +512,7 @@
 
             const result = await Swal.fire({
                 title: 'Delete User?',
-                text: warningText,
+                html: `Are you sure you want to delete <strong>${userName}</strong>?<br><br>${warningText}`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
