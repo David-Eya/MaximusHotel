@@ -818,16 +818,30 @@
       let otp = document.getElementById('otpCode').value.trim().replace(/\D/g, ''); // Remove non-digits
       
       // Validate OTP length
-      if (otp.length !== 6) {
+      if (otp.length === 0) {
         Swal.fire({
           icon: 'error',
           title: 'Invalid OTP',
-          text: 'OTP must be exactly 6 digits.',
+          text: 'Please enter the OTP code.',
           confirmButtonText: 'OK',
           confirmButtonColor: '#084466'
         });
         return;
       }
+      
+      if (otp.length > 6) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid OTP',
+          text: 'OTP must be 6 digits or less.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      // Pad OTP to 6 digits with leading zeros
+      otp = otp.padStart(6, '0');
       
       // Get email from query parameter or registrationData
       const urlParams = new URLSearchParams(window.location.search);
@@ -868,7 +882,7 @@
           },
           body: JSON.stringify({ 
             email: emailToUse, 
-            otp, 
+            otp: otp, 
             purpose: 'registration' 
           })
         });
@@ -1123,16 +1137,30 @@
       let otp = document.getElementById('forgotPasswordOtpCode').value.trim().replace(/\D/g, ''); // Remove non-digits
       
       // Validate OTP length
-      if (otp.length !== 6) {
+      if (otp.length === 0) {
         Swal.fire({
           icon: 'error',
           title: 'Invalid OTP',
-          text: 'OTP must be exactly 6 digits.',
+          text: 'Please enter the OTP code.',
           confirmButtonText: 'OK',
           confirmButtonColor: '#084466'
         });
         return;
       }
+      
+      if (otp.length > 6) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid OTP',
+          text: 'OTP must be 6 digits or less.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#084466'
+        });
+        return;
+      }
+      
+      // Pad OTP to 6 digits with leading zeros
+      otp = otp.padStart(6, '0');
       
       // Get email from query parameter or forgotPasswordEmail variable
       const urlParams = new URLSearchParams(window.location.search);
@@ -1173,7 +1201,7 @@
           },
           body: JSON.stringify({ 
             email: emailToUse, 
-            otp, 
+            otp: otp, 
             purpose: 'password_reset' 
           })
         });
