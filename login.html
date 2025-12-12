@@ -425,12 +425,23 @@
           const otpContainer = document.getElementById('otpVerification');
           if (otpContainer) {
             otpContainer.style.display = 'block';
-            // Store email for registration OTP verification
-            if (typeof registrationData === 'undefined' || registrationData === null) {
-              // If registrationData is not set, we still show the form
-              // The user will need to enter the OTP manually
-              console.log('Showing registration OTP verification for email:', email);
+            // Try to restore registrationData from sessionStorage if not already loaded
+            if (!registrationData) {
+              try {
+                const stored = sessionStorage.getItem('registrationData');
+                if (stored) {
+                  registrationData = JSON.parse(stored);
+                  // Verify the email matches
+                  if (registrationData.email !== email) {
+                    registrationData = null;
+                    sessionStorage.removeItem('registrationData');
+                  }
+                }
+              } catch (e) {
+                console.error('Error restoring registration data:', e);
+              }
             }
+            console.log('Showing registration OTP verification for email:', email);
           }
         } else if (purpose === 'password_reset') {
           // Show forgot password OTP verification
@@ -438,7 +449,14 @@
           if (forgotOtpContainer) {
             forgotOtpContainer.style.display = 'block';
             // Store email for forgot password OTP verification
-            // The email will be retrieved from URL params in the form handler
+            if (!forgotPasswordEmail) {
+              forgotPasswordEmail = email;
+              try {
+                sessionStorage.setItem('forgotPasswordEmail', email);
+              } catch (e) {
+                console.error('Error storing forgot password email:', e);
+              }
+            }
             console.log('Showing forgot password OTP verification for email:', email);
           }
         }
@@ -532,6 +550,28 @@
     let registrationData = null;
     let forgotPasswordEmail = null;
     let verifiedForgotPasswordOtp = null; // Store verified OTP for password reset
+    
+    // Try to restore registrationData from sessionStorage on page load
+    try {
+      const storedRegistrationData = sessionStorage.getItem('registrationData');
+      if (storedRegistrationData) {
+        registrationData = JSON.parse(storedRegistrationData);
+        console.log('Restored registration data from sessionStorage');
+      }
+    } catch (e) {
+      console.error('Error restoring registration data:', e);
+    }
+    
+    // Try to restore forgotPasswordEmail from sessionStorage on page load
+    try {
+      const storedForgotPasswordEmail = sessionStorage.getItem('forgotPasswordEmail');
+      if (storedForgotPasswordEmail) {
+        forgotPasswordEmail = storedForgotPasswordEmail;
+        console.log('Restored forgot password email from sessionStorage');
+      }
+    } catch (e) {
+      console.error('Error restoring forgot password email:', e);
+    }
 
     // Password Strength Checker - Make globally accessible
     window.checkPasswordStrength = function() {
@@ -693,6 +733,13 @@
       
       // Store registration data
       registrationData = { fname, lname, username, email, password };
+      
+      // Also store in sessionStorage so it persists if user closes page
+      try {
+        sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
+      } catch (e) {
+        console.error('Error storing registration data:', e);
+      }
       
       // Show loading state
       Swal.fire({
@@ -1007,6 +1054,13 @@
       const email = document.getElementById('forgotEmail').value.trim();
       forgotPasswordEmail = email;
       
+      // Store in sessionStorage so it persists if user closes page
+      try {
+        sessionStorage.setItem('forgotPasswordEmail', email);
+      } catch (e) {
+        console.error('Error storing forgot password email:', e);
+      }
+      
       Swal.fire({
         title: 'Sending OTP...',
         allowOutsideClick: false,
@@ -1183,6 +1237,18 @@
         return;
       }
       
+      // Get email from sessionStorage if not available
+      if (!forgotPasswordEmail) {
+        try {
+          const stored = sessionStorage.getItem('forgotPasswordEmail');
+          if (stored) {
+            forgotPasswordEmail = stored;
+          }
+        } catch (e) {
+          console.error('Error retrieving forgot password email:', e);
+        }
+      }
+      
       if (!forgotPasswordEmail || !verifiedForgotPasswordOtp) {
         Swal.fire({
           icon: 'error',
@@ -1195,6 +1261,12 @@
           document.getElementById('forgotPassword').style.display = 'block';
           forgotPasswordEmail = null;
           verifiedForgotPasswordOtp = null;
+          // Clear from sessionStorage
+          try {
+            sessionStorage.removeItem('forgotPasswordEmail');
+          } catch (e) {
+            console.error('Error clearing forgot password email:', e);
+          }
         });
         return;
       }
@@ -1243,6 +1315,12 @@
             document.getElementById('resetPasswordForm').reset();
             forgotPasswordEmail = null;
             verifiedForgotPasswordOtp = null;
+            // Clear from sessionStorage
+            try {
+              sessionStorage.removeItem('forgotPasswordEmail');
+            } catch (e) {
+              console.error('Error clearing forgot password email:', e);
+            }
           });
         } else {
           // Show specific error message
@@ -1370,6 +1448,12 @@
       document.getElementById('signIn').style.display = 'block';
       forgotPasswordEmail = null;
       verifiedForgotPasswordOtp = null;
+      // Clear from sessionStorage
+      try {
+        sessionStorage.removeItem('forgotPasswordEmail');
+      } catch (e) {
+        console.error('Error clearing forgot password email:', e);
+      }
     });
   </script>
 </body>
