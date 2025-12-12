@@ -931,17 +931,21 @@
             confirmButtonText: 'Continue to Login',
             confirmButtonColor: '#084466',
             allowOutsideClick: false,
-            timer: 3000,
+            timer: 2000,
             timerProgressBar: true
-          }).then((result) => {
-            if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
-              // Switch to login form
-              document.getElementById('otpVerification').style.display = 'none';
-              document.getElementById('signIn').style.display = 'block';
-              // Clear forms
-              document.getElementById('registerForm').reset();
-              document.getElementById('otpForm').reset();
-              registrationData = null;
+          }).then(() => {
+            // Switch to login form
+            document.getElementById('otpVerification').style.display = 'none';
+            document.getElementById('signIn').style.display = 'block';
+            // Clear forms
+            document.getElementById('registerForm').reset();
+            document.getElementById('otpForm').reset();
+            registrationData = null;
+            // Clear from sessionStorage
+            try {
+              sessionStorage.removeItem('registrationData');
+            } catch (e) {
+              console.error('Error clearing registration data:', e);
             }
           });
         } else {
