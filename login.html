@@ -395,6 +395,55 @@
   <script src="/MaximusHotel/js/script2.js"></script>
   <script src="/MaximusHotel/js/auth.js"></script>
   <script>
+    // Check for email and purpose query parameters on page load
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email');
+      const purpose = urlParams.get('purpose');
+      
+      if (email && purpose) {
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function() {
+            showOtpVerification(email, purpose);
+          });
+        } else {
+          showOtpVerification(email, purpose);
+        }
+      }
+      
+      function showOtpVerification(email, purpose) {
+        // Hide all containers first
+        const containers = ['signIn', 'signUp', 'otpVerification', 'forgotPassword', 'forgotPasswordOtpVerification', 'resetPassword'];
+        containers.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = 'none';
+        });
+        
+        if (purpose === 'registration') {
+          // Show registration OTP verification
+          const otpContainer = document.getElementById('otpVerification');
+          if (otpContainer) {
+            otpContainer.style.display = 'block';
+            // Store email for registration OTP verification
+            if (typeof registrationData === 'undefined' || registrationData === null) {
+              // If registrationData is not set, we still show the form
+              // The user will need to enter the OTP manually
+              console.log('Showing registration OTP verification for email:', email);
+            }
+          }
+        } else if (purpose === 'password_reset') {
+          // Show forgot password OTP verification
+          const forgotOtpContainer = document.getElementById('forgotPasswordOtpVerification');
+          if (forgotOtpContainer) {
+            forgotOtpContainer.style.display = 'block';
+            // Store email for forgot password OTP verification
+            // The email will be retrieved from URL params in the form handler
+            console.log('Showing forgot password OTP verification for email:', email);
+          }
+        }
+      }
+    })();
     // Handle login form submission
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -733,13 +782,22 @@
         return;
       }
       
-      if (!registrationData) {
+      // Get email from query parameter or registrationData
+      const urlParams = new URLSearchParams(window.location.search);
+      const emailFromUrl = urlParams.get('email');
+      const emailToUse = registrationData ? registrationData.email : emailFromUrl;
+      
+      if (!emailToUse) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Registration data not found. Please start over.',
+          text: 'Email not found. Please start the registration process again.',
           confirmButtonText: 'OK',
           confirmButtonColor: '#084466'
+        }).then(() => {
+          // Redirect to registration form
+          document.getElementById('otpVerification').style.display = 'none';
+          document.getElementById('signUp').style.display = 'block';
         });
         return;
       }
@@ -762,7 +820,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ 
-            email: registrationData.email, 
+            email: emailToUse, 
             otp, 
             purpose: 'registration' 
           })
@@ -778,6 +836,29 @@
             text: verifyResult.message || 'Invalid OTP. Please try again.',
             confirmButtonText: 'Try Again',
             confirmButtonColor: '#084466'
+          });
+          return;
+        }
+        
+        // If registrationData is not available, just verify OTP and ask user to complete registration
+        if (!registrationData) {
+          Swal.close();
+          Swal.fire({
+            icon: 'success',
+            title: 'OTP Verified',
+            text: 'Your email has been verified. Please complete your registration.',
+            confirmButtonText: 'Continue Registration',
+            confirmButtonColor: '#084466'
+          }).then(() => {
+            // Clear URL parameters and show registration form
+            window.history.replaceState({}, document.title, window.location.pathname);
+            document.getElementById('otpVerification').style.display = 'none';
+            document.getElementById('signUp').style.display = 'block';
+            // Pre-fill email if available
+            const emailInput = document.getElementById('regEmail');
+            if (emailInput && emailFromUrl) {
+              emailInput.value = emailFromUrl;
+            }
           });
           return;
         }
@@ -999,7 +1080,12 @@
         return;
       }
       
-      if (!forgotPasswordEmail) {
+      // Get email from query parameter or forgotPasswordEmail variable
+      const urlParams = new URLSearchParams(window.location.search);
+      const emailFromUrl = urlParams.get('email');
+      const emailToUse = forgotPasswordEmail || emailFromUrl;
+      
+      if (!emailToUse) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -1008,6 +1094,11 @@
           confirmButtonColor: '#084466'
         });
         return;
+      }
+      
+      // Update forgotPasswordEmail if it wasn't set
+      if (!forgotPasswordEmail && emailFromUrl) {
+        forgotPasswordEmail = emailFromUrl;
       }
       
       Swal.fire({
@@ -1027,7 +1118,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ 
-            email: forgotPasswordEmail, 
+            email: emailToUse, 
             otp, 
             purpose: 'password_reset' 
           })
