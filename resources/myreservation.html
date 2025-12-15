@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Maximus - Room Booking">
+    <meta name="keywords" content="itp4">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maximus - Room Booking</title>
+    <link rel="icon" href="/img/favicon.png" />
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cabin:400,500,600,700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/css/flaticon.css" type="text/css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+    </script>
+    <!-- Load layout system -->
+    <script src="/js/layout-loader.js"></script>
+</head>
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Layout navigation will be loaded here -->
+    <div id="layout-mobilenav-placeholder"></div>
+    <div id="layout-navbar-placeholder"></div>
+<!-- Breadcrumb Section Begin -->
+<div class="breadcrumb-section pb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text">
+                    <h2>My Reservation</h2>
+                    <div class="bt-option">
+                        <a href="index.html">Home</a>
+                        <span>My Reservation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb Section End -->
+<style>
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .status-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .status-badge.pending {
+        background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+        color: #fff;
+    }
+    
+    .status-badge.approved {
+        background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+        color: #fff;
+    }
+    
+    .status-badge.reject {
+        background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
+        color: #fff;
+    }
+    
+    .status-badge.cancelled {
+        background: linear-gradient(135deg, #78909c 0%, #546e7a 100%);
+        color: #fff;
+    }
+    
+    .status-icon {
+        font-size: 14px;
+        display: inline-block;
+    }
+    
+    .status-badge.pending::before {
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        background: #fff;
+        animation: pulse 2s infinite;
+    }
+    
+    .status-badge.approved::before,
+    .status-badge.reject::before,
+    .status-badge.cancelled::before {
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        background: #fff;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+    }
+    
+    .table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(35, 79, 104, 0.1);
+        background: #ffffff;
+    }
+    
+    .table thead {
+        background: linear-gradient(135deg, #234F68 0%, #084466 100%);
+        color: #fff;
+    }
+    
+    .table thead th {
+        border: none;
+        padding: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f5f7fa;
+        box-shadow: 0 2px 8px rgba(35, 79, 104, 0.05);
+    }
+    
+    .table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        color: #19191a;
+    }
+    
+    .table tbody tr:last-child {
+        border-bottom: none;
+    }
+</style>
+
+<section class="contact-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-lg-3 mb-4">
+                    <select id="statusFilter" class="form-select nice-select" style="border-radius: 8px; padding: 10px; border: 2px solid #234F68; transition: all 0.3s ease; color: #19191a; font-weight: 500;">
+                        <option value="">All Reservations</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Reject">Reject</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="table-responsive" style="border-radius: 8px; overflow: hidden;">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Room No.</th>
+                                <th scope="col">Room Type</th>
+                                <th scope="col">Check-In</th>
+                                <th scope="col">Check-Out</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center" style="padding: 40px;">
+                                    <div style="display: inline-block;">
+                                        <div class="spinner-border text-primary" role="status" style="margin-right: 10px;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <span>Loading reservations...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    let currentStatus = '';
+
+    // Load reservations
+    async function loadReservations(status = '') {
+        if (!auth.isAuthenticated()) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const tbody = document.getElementById('reservationsTableBody');
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="padding: 40px;"><div style="display: inline-block;"><div class="spinner-border text-primary" role="status" style="margin-right: 10px;"><span class="visually-hidden">Loading...</span></div><span>Loading reservations...</span></div></td></tr>';
+
+        try {
+            const url = status ? `reservations/list?status=${status}` : 'reservations/list';
+            const response = await auth.apiCall(url);
+            const data = await response.json();
+            
+            console.log('Reservations API response:', data); // Debug
+
+            // Handle response structure - check both nested and direct
+            const reservations = data.reservations || (data.data && data.data.reservations) || (data.data && Array.isArray(data.data) ? data.data : []);
+            
+            if (data.success && reservations) {
+                displayReservations(reservations);
+            } else {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">' + (data.message || 'Failed to load reservations') + '</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error loading reservations:', error);
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Failed to load reservations. Please try again.</td></tr>';
+        }
+    }
+
+    // Display reservations in table
+    function displayReservations(reservations) {
+        const tbody = document.getElementById('reservationsTableBody');
+        
+        if (reservations.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="padding: 40px; color: #6b6b6b;"><span style="font-size: 48px; margin-bottom: 10px; display: block; opacity: 0.5;">📭</span>No reservations found.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = reservations.map(reservation => {
+            const statusBadge = getStatusBadge(reservation.book_status);
+            const cancelButton = reservation.book_status === 'Pending' 
+                ? `<button type="button" class="btn btn-danger btn-sm" onclick="cancelReservation(${reservation.book_id})" style="border-radius: 6px; padding: 6px 16px; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(239, 83, 80, 0.3); background: linear-gradient(135deg, #ef5350 0%, #e53935 100%); border: none;">Cancel</button>`
+                : '<span style="color: #9e9e9e;">-</span>';
+            
+            return `
+                <tr>
+                    <td style="font-weight: 600; color: #234F68;">#${reservation.book_id}</td>
+                    <td><strong style="color: #19191a;">Room #${reservation.room_id}</strong></td>
+                    <td style="color: #234F68;">${reservation.category_name}</td>
+                    <td><span style="color: #234F68; margin-right: 5px;"></span><span style="color: #19191a;">${formatDate(reservation.check_in)}</span></td>
+                    <td><span style="color: #234F68; margin-right: 5px;"></span><span style="color: #19191a;">${formatDate(reservation.check_out)}</span></td>
+                    <td>${statusBadge}</td>
+                    <td>${cancelButton}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // Get status badge HTML with modern styling
+    function getStatusBadge(status) {
+        const badges = {
+            'Pending': '<span class="status-badge pending"><span class="status-icon">⏳</span> Pending</span>',
+            'Approved': '<span class="status-badge approved"><span class="status-icon">✓</span> Approved</span>',
+            'Reject': '<span class="status-badge reject"><span class="status-icon">✕</span> Rejected</span>',
+            'Cancelled': '<span class="status-badge cancelled"><span class="status-icon">⊘</span> Cancelled</span>'
+        };
+        return badges[status] || `<span class="status-badge">${status}</span>`;
+    }
+
+    // Format date with modern styling
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    }
+
+    // Cancel reservation
+    async function cancelReservation(bookId) {
+        const result = await Swal.fire({
+            title: 'Cancel Reservation?',
+            text: 'Are you sure you want to cancel this reservation? This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it',
+            cancelButtonText: 'No, keep it',
+            reverseButtons: true
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        try {
+            // Show loading state
+            Swal.fire({
+                title: 'Cancelling...',
+                text: 'Please wait while we cancel your reservation',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const response = await auth.apiCall('reservations/cancel', {
+                method: 'POST',
+                body: JSON.stringify({ booking_id: bookId })
+            });
+
+            const data = await response.json();
+
+            Swal.close();
+
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cancelled!',
+                    text: data.message || 'Your reservation has been cancelled successfully.',
+                    confirmButtonColor: '#084466',
+                    confirmButtonText: 'OK'
+                });
+                // Reload reservations
+                await loadReservations(currentStatus);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Cancellation Failed',
+                    text: data.message || 'Failed to cancel booking. Please try again.',
+                    confirmButtonColor: '#084466',
+                    confirmButtonText: 'OK'
+                });
+            }
+        } catch (error) {
+            Swal.close();
+            console.error('Error cancelling reservation:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while cancelling your reservation. Please try again.',
+                confirmButtonColor: '#084466',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+
+    // Initialize nice-select
+    function initNiceSelect() {
+        const jq = typeof jQuery !== 'undefined' ? jQuery : (typeof $ !== 'undefined' ? $ : null);
+        if (jq && jq.fn.niceSelect) {
+            jq('#statusFilter').niceSelect();
+            return true;
+        }
+        return false;
+    }
+    
+    // Handle status filter change (native event listener)
+    document.getElementById('statusFilter').addEventListener('change', (e) => {
+        currentStatus = e.target.value;
+        loadReservations(currentStatus);
+    });
+    
+    // Load reservations on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get status from URL if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status') || '';
+        if (status) {
+            document.getElementById('statusFilter').value = status;
+            currentStatus = status;
+        }
+        loadReservations(currentStatus);
+    });
+    
+    // Initialize nice-select after all scripts are loaded (footer scripts)
+    window.addEventListener('load', function() {
+        // Wait for jQuery and nice-select to be available
+        const initSelect = () => {
+            if (initNiceSelect()) {
+                // Successfully initialized
+                console.log('Nice-select initialized');
+                
+                // Update nice-select display if status was set from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const status = urlParams.get('status') || '';
+                if (status) {
+                    const jq = typeof jQuery !== 'undefined' ? jQuery : (typeof $ !== 'undefined' ? $ : null);
+                    if (jq && jq.fn.niceSelect) {
+                        setTimeout(() => {
+                            jq('#statusFilter').niceSelect('update');
+                        }, 100);
+                    }
+                }
+            } else {
+                // Retry after a short delay
+                setTimeout(initSelect, 100);
+            }
+        };
+        
+        // Start initialization
+        initSelect();
+        
+        // Handle nice-select change event using jQuery
+        const jq = typeof jQuery !== 'undefined' ? jQuery : (typeof $ !== 'undefined' ? $ : null);
+        if (jq) {
+            jq(document).on('change', '#statusFilter', function() {
+                currentStatus = jq(this).val();
+                loadReservations(currentStatus);
+            });
+        }
+    });
+</script>
+
+<!-- Layout footer will be loaded here -->
+<div id="layout-footer-placeholder"></div>
+
+<!-- Js Plugins -->
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/jquery.nice-select.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/jquery.slicknav.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/pages.js"></script>
+<script>
+    // Navigation update is now handled by layout-loader.js after layouts are loaded
+    (async function() {
+        if (typeof auth === 'undefined') {
+            console.error('auth.js not loaded');
+            return;
+        }
+        const profileNav = document.getElementById('navProfile');
+        const loginNav = document.getElementById('navLogin');
+        const logoutLink = document.getElementById('navLogout');
+        const mobileProfileNav = document.getElementById('mobileProfile');
+        const mobileLoginNav = document.getElementById('mobileLogin');
+        const mobileLogoutLink = document.getElementById('mobileLogout');
+        if (auth.isAuthenticated()) {
+            const result = await auth.verifyToken();
+            if (result.success) {
+                if (profileNav) profileNav.style.display = '';
+                if (loginNav) loginNav.style.display = 'none';
+                if (mobileProfileNav) mobileProfileNav.style.display = '';
+                if (mobileLoginNav) mobileLoginNav.style.display = 'none';
+                const user = result.user;
+                if (user.usertype === 'Admin') {
+                    window.location.href = '/admin/index.html';
+                    return;
+                } else if (user.usertype === 'Incharge') {
+                    window.location.href = '/admin/index.html';
+                    return;
+                }
+            } else {
+                if (profileNav) profileNav.style.display = 'none';
+                if (loginNav) loginNav.style.display = '';
+                if (mobileProfileNav) mobileProfileNav.style.display = 'none';
+                if (mobileLoginNav) mobileLoginNav.style.display = '';
+            }
+        } else {
+            if (profileNav) profileNav.style.display = 'none';
+            if (loginNav) loginNav.style.display = '';
+            if (mobileProfileNav) mobileProfileNav.style.display = 'none';
+            if (mobileLoginNav) mobileLoginNav.style.display = '';
+        }
+        if (logoutLink) {
+            logoutLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await auth.logout();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logout Successful',
+                    text: 'You have been logged out successfully',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#084466',
+                    allowOutsideClick: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
+                        window.location.href = 'login.html';
+                    }
+                });
+            });
+        }
+        if (mobileLogoutLink) {
+            mobileLogoutLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await auth.logout();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logout Successful',
+                    text: 'You have been logged out successfully',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#084466',
+                    allowOutsideClick: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
+                        window.location.href = 'login.html';
+                    }
+                });
+            });
+        }
+    })();
+</script>
+</body>
+</html>

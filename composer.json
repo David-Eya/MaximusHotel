@@ -1,0 +1,19 @@
+{
+    "name": "maximushotel/laravel",
+    "description": "Maximus Hotel Laravel Application",
+    "type": "project",
+    "minimum-stability": "stable",
+    "require": {
+        "laravel/framework": "^12.41"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
