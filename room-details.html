@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Maximus - Room Booking">
+    <meta name="keywords" content="itp4">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maximus - Room Booking</title>
+    <link rel="icon" href="/MaximusHotel/img/favicon.png" />
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cabin:400,500,600,700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/MaximusHotel/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/flaticon.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/MaximusHotel/css/style.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+    </script>
+    <!-- Load layout system -->
+    <script src="/MaximusHotel/js/layout-loader.js"></script>
+</head>
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Layout navigation will be loaded here -->
+    <div id="layout-mobilenav-placeholder"></div>
+    <div id="layout-navbar-placeholder"></div>
+    
+    <!-- Breadcrumb Section Begin -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-text">
+                        <h2>Room Details</h2>
+                        <div class="bt-option">
+                            <a href="/MaximusHotel/index.html">Home</a>
+                            <span>Room Details</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Room Details Section Begin -->
+    <section class="room-details-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="room-details-item" id="roomDetailsContainer">
+                        <div class="text-center" style="padding: 40px;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3">Loading room details...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="room-booking">
+                        <h3>Your Reservation</h3>
+                        <form id="bookingForm">
+                            <div class="check-date">
+                                <label for="date-in">Check In:</label>
+                                <input type="text" class="date-input" id="date-in" name="check_in" required>
+                                <i class="icon_calendar"></i>
+                            </div>
+                            <div class="check-date">
+                                <label for="date-out">Check Out:</label>
+                                <input type="text" class="date-input" id="date-out" name="check_out" required>
+                                <i class="icon_calendar"></i>
+                            </div>
+                            <div class="select-option">
+                                <label for="guest">Guest:</label>
+                                <select id="guest" name="guest">
+                                    <option value="">Select Guest</option>
+                                </select>
+                            </div>
+                            <div class="select-option">
+                                <label for="roomType">Room Type:</label>
+                                <select id="roomType" name="room_type">
+                                    <option value="">Select Room Type</option>
+                                </select>
+                            </div>
+                            <button type="button" id="checkAvailabilityBtn" style="display: none;">Check Availability</button>
+                            <button type="button" id="bookNowBtn" style="display: none;">Book Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Room Details Section End -->
+
+    <!-- Layout footer will be loaded here -->
+    <div id="layout-footer-placeholder"></div>
+
+    <!-- Js Plugins -->
+    <script src="/MaximusHotel/js/jquery-3.3.1.min.js"></script>
+    <script src="/MaximusHotel/js/bootstrap.min.js"></script>
+    <script src="/MaximusHotel/js/jquery.magnific-popup.min.js"></script>
+    <script src="/MaximusHotel/js/jquery.nice-select.min.js"></script>
+    <script src="/MaximusHotel/js/jquery-ui.min.js"></script>
+    <script src="/MaximusHotel/js/jquery.slicknav.js"></script>
+    <script src="/MaximusHotel/js/owl.carousel.min.js"></script>
+    <script src="/MaximusHotel/js/main.js"></script>
+    <script src="/MaximusHotel/js/config.js"></script>
+    <script src="/MaximusHotel/js/auth.js"></script>
+    <script src="/MaximusHotel/js/pages.js"></script>
+    <script>
+        let currentRoom = null;
+        let isAvailable = false;
+        let checkInDate = '';
+        let checkOutDate = '';
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Load room details
+        async function loadRoomDetails() {
+            const roomId = getUrlParameter('room_id');
+            const roomType = getUrlParameter('room_type');
+            
+            if (!roomId && !roomType) {
+                window.location.href = 'rooms.html';
+                return;
+            }
+
+            try {
+                const auth = new Auth();
+                let url = `${auth.apiBase}/pages/get_room_details`;
+                if (roomId) {
+                    url += `?room_id=${roomId}`;
+                } else if (roomType) {
+                    url += `?room_type=${encodeURIComponent(roomType)}`;
+                }
+
+                console.log('Loading room details from:', url);
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const responseText = await response.text();
+                console.log('Room details raw response:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('Failed to parse JSON response:', parseError);
+                    console.error('Response was:', responseText);
+                    throw new Error('Invalid JSON response from server');
+                }
+                
+                console.log('Room details parsed response:', data);
+
+                if (data.success && data.data) {
+                    currentRoom = data.data;
+                    console.log('Current room data:', currentRoom);
+                    console.log('Room capacity:', currentRoom.capacity);
+                    console.log('Room category_name:', currentRoom.category_name);
+                    console.log('Room category_id:', currentRoom.category_id);
+                    displayRoomDetails(currentRoom);
+                    setupBookingForm(currentRoom);
+                    
+                    const available = getUrlParameter('available');
+                    const checkin = getUrlParameter('checkin');
+                    const checkout = getUrlParameter('checkout');
+                    
+                    if (available === 'true' && checkin && checkout) {
+                        isAvailable = true;
+                        checkInDate = checkin;
+                        checkOutDate = checkout;
+                        document.getElementById('date-in').value = checkin;
+                        document.getElementById('date-out').value = checkout;
+                        document.getElementById('checkAvailabilityBtn').style.display = 'none';
+                        document.getElementById('bookNowBtn').style.display = 'block';
+                    } else {
+                        document.getElementById('checkAvailabilityBtn').style.display = 'block';
+                        document.getElementById('bookNowBtn').style.display = 'none';
+                    }
+                } else {
+                    // Even if room not found, enable the form fields
+                    const guestSelect = document.getElementById('guest');
+                    const roomTypeSelect = document.getElementById('roomType');
+                    if (guestSelect) {
+                        guestSelect.innerHTML = '<option value="">Select Guest</option>';
+                        guestSelect.disabled = false;
+                    }
+                    if (roomTypeSelect) {
+                        roomTypeSelect.innerHTML = '<option value="">Select Room Type</option>';
+                        roomTypeSelect.disabled = false;
+                        if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+                            $('select').niceSelect();
+                        }
+                    }
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Room Not Found',
+                        text: data.message || 'The requested room could not be found.',
+                        confirmButtonColor: '#084466'
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading room details:', error);
+                // Always enable the form fields even if room details fail
+                const guestSelect = document.getElementById('guest');
+                const roomTypeSelect = document.getElementById('roomType');
+                if (guestSelect) {
+                    guestSelect.innerHTML = '<option value="">Select Guest</option>';
+                    guestSelect.disabled = false;
+                }
+                if (roomTypeSelect) {
+                    roomTypeSelect.innerHTML = '<option value="">Select Room Type</option>';
+                    roomTypeSelect.disabled = false;
+                    if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+                        setTimeout(() => {
+                            $('select').niceSelect();
+                        }, 100);
+                    }
+                }
+                
+                // Show error but don't block the user
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to load room details. Form is still available.',
+                });
+            }
+        }
+
+        // Display room details
+        function displayRoomDetails(room) {
+            const container = document.getElementById('roomDetailsContainer');
+            let imagePath;
+            let defaultImagePath;
+            if (typeof CONFIG !== 'undefined' && CONFIG.getRoomImageUrl) {
+                imagePath = CONFIG.getRoomImageUrl(room.image);
+                defaultImagePath = CONFIG.getRoomImageUrl('default.jpg');
+            } else {
+                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                imagePath = room.image && room.image.trim() && room.image !== 'default.jpg'
+                    ? `${backendUrl}/img/room/${room.image}`
+                    : `${backendUrl}/img/room/default.jpg`;
+                defaultImagePath = `${backendUrl}/img/room/default.jpg`;
+            }
+            
+            container.innerHTML = `
+                <img src="${imagePath}" alt="${room.category_name || 'Room'}" onerror="this.src='${defaultImagePath}'">
+                <div class="rd-text">
+                    <div class="rd-title">
+                        <h3>Room ${room.room_id || ''} ${room.room_id ? '(' + room.category_name + ')' : room.category_name || ''}</h3>
+                    </div>
+                    <h2>₱${room.price || '0'}<span>/Pernight</span></h2>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="r-o">Size:</td>
+                                <td>30 ft</td>
+                            </tr>
+                            <tr>
+                                <td class="r-o">Capacity:</td>
+                                <td>${room.capacity || 'N/A'} Person</td>
+                            </tr>
+                            <tr>
+                                <td class="r-o">Bed:</td>
+                                <td>${room.bed || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="r-o">Services:</td>
+                                <td>${room.services || 'N/A'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="f-para">${room.description || 'No description available.'}</p>
+                </div>
+            `;
+        }
+
+        // Setup booking form
+        function setupBookingForm(room) {
+            console.log('Setting up booking form with room data:', room);
+            const guestSelect = document.getElementById('guest');
+            const roomTypeSelect = document.getElementById('roomType');
+            
+            if (!guestSelect || !roomTypeSelect) {
+                console.error('Form elements not found');
+                enableFormsWithDefaults();
+                return;
+            }
+            
+            // Populate guest dropdown with room capacity
+            // The capacity should come from room_type table
+            const capacity = room.capacity || (room.capacity ? room.capacity : null);
+            console.log('Setting guest capacity to:', capacity);
+            
+            if (capacity) {
+                guestSelect.innerHTML = `<option value="${capacity}">${capacity} Guest${capacity > 1 ? 's' : ''}</option>`;
+            } else {
+                // If no capacity, show common options
+                guestSelect.innerHTML = `
+                    <option value="">Select Guest</option>
+                    <option value="1">1 Guest</option>
+                    <option value="2">2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                    <option value="5">5+ Guests</option>
+                `;
+            }
+            
+            // Populate room type dropdown with room category
+            const categoryId = room.category_id || null;
+            const categoryName = room.category_name || null;
+            console.log('Setting room type - ID:', categoryId, 'Name:', categoryName);
+            
+            if (categoryId && categoryName) {
+                roomTypeSelect.innerHTML = `<option value="${categoryId}">${categoryName}</option>`;
+            } else {
+                roomTypeSelect.innerHTML = '<option value="">Select Room Type</option>';
+            }
+            
+            guestSelect.disabled = false;
+            roomTypeSelect.disabled = false;
+            
+            console.log('Form fields enabled. Guest HTML:', guestSelect.innerHTML);
+            console.log('Room Type HTML:', roomTypeSelect.innerHTML);
+            
+            // Initialize/reinitialize nice-select after content change
+            if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+                setTimeout(() => {
+                    try {
+                        // Destroy existing nice-select if any
+                        $('#guest, #roomType').niceSelect('destroy');
+                    } catch (e) {
+                        // Ignore if not initialized yet
+                    }
+                    // Initialize nice-select
+                    $('#guest, #roomType').niceSelect();
+                    console.log('Nice-select initialized for booking form');
+                }, 200);
+            }
+            
+            // Initialize date pickers
+            $("#date-in").datepicker({
+                minDate: 0,
+                dateFormat: 'dd MM, yy',
+                onSelect: function(selectedDate) {
+                    const checkInDate = $(this).datepicker('getDate');
+                    if (checkInDate) {
+                        const minCheckOutDate = new Date(checkInDate);
+                        minCheckOutDate.setDate(minCheckOutDate.getDate() + 1);
+                        $("#date-out").datepicker("option", "minDate", minCheckOutDate);
+                        const currentCheckOutDate = $("#date-out").datepicker('getDate');
+                        if (!currentCheckOutDate || currentCheckOutDate < minCheckOutDate) {
+                            $("#date-out").datepicker("setDate", minCheckOutDate);
+                        }
+                    }
+                    isAvailable = false;
+                    document.getElementById('checkAvailabilityBtn').style.display = 'block';
+                    document.getElementById('bookNowBtn').style.display = 'none';
+                }
+            });
+
+            $("#date-out").datepicker({
+                minDate: 1,
+                dateFormat: 'dd MM, yy',
+                onSelect: function() {
+                    isAvailable = false;
+                    document.getElementById('checkAvailabilityBtn').style.display = 'block';
+                    document.getElementById('bookNowBtn').style.display = 'none';
+                }
+            });
+        }
+
+        // Check availability
+        async function checkAvailability() {
+            const roomId = getUrlParameter('room_id');
+            if (!roomId) {
+                Toast.fire({ icon: 'error', title: 'Room ID is required' });
+                return;
+            }
+
+            const checkIn = document.getElementById('date-in').value;
+            const checkOut = document.getElementById('date-out').value;
+
+            if (!checkIn || !checkOut) {
+                Toast.fire({ icon: 'error', title: 'Please select check-in and check-out dates' });
+                return;
+            }
+
+            // Convert date format from "dd MM, yy" to "yyyy-mm-dd"
+            const parsedCheckInDate = $.datepicker.parseDate('dd MM, yy', checkIn);
+            const parsedCheckOutDate = $.datepicker.parseDate('dd MM, yy', checkOut);
+            const checkInFormatted = $.datepicker.formatDate('yy-mm-dd', parsedCheckInDate);
+            const checkOutFormatted = $.datepicker.formatDate('yy-mm-dd', parsedCheckOutDate);
+
+            if (parsedCheckOutDate <= parsedCheckInDate) {
+                Toast.fire({ icon: 'error', title: 'Check-out date must be after check-in date' });
+                return;
+            }
+
+            try {
+                Swal.fire({
+                    title: 'Checking availability...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const auth = new Auth();
+                const url = `${auth.apiBase}/reservations/check-availability?room_id=${roomId}&check_in=${checkInFormatted}&check_out=${checkOutFormatted}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                Swal.close();
+
+                if (data.success) {
+                    if (data.available) {
+                        isAvailable = true;
+                        checkInDate = checkInFormatted;
+                        checkOutDate = checkOutFormatted;
+                        document.getElementById('checkAvailabilityBtn').style.display = 'none';
+                        document.getElementById('bookNowBtn').style.display = 'block';
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Available',
+                            text: `Room #${roomId} is available for booking!`,
+                            confirmButtonColor: '#084466'
+                        });
+                    } else {
+                        isAvailable = false;
+                        document.getElementById('checkAvailabilityBtn').style.display = 'block';
+                        document.getElementById('bookNowBtn').style.display = 'none';
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Not Available',
+                            text: data.message || `Sorry, Room #${roomId} is not available for the selected dates.`,
+                            confirmButtonColor: '#084466'
+                        });
+                    }
+                } else {
+                    Toast.fire({ icon: 'error', title: data.message || 'Failed to check availability' });
+                }
+            } catch (error) {
+                Swal.close();
+                console.error('Error checking availability:', error);
+                Toast.fire({ icon: 'error', title: 'Failed to check availability' });
+            }
+        }
+
+        // Book room
+        async function bookRoom() {
+            if (!auth.isAuthenticated()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'Please login to book a room.',
+                    confirmButtonColor: '#084466',
+                    showCancelButton: true,
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Go to Login',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'login.html';
+                    }
+                });
+                return;
+            }
+
+            const roomId = getUrlParameter('room_id');
+            if (!roomId) {
+                Toast.fire({ icon: 'error', title: 'Room ID is required' });
+                return;
+            }
+
+            if (!isAvailable) {
+                Toast.fire({ icon: 'error', title: 'Please check availability first' });
+                return;
+            }
+
+            try {
+                Swal.fire({
+                    title: 'Processing booking...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const auth = new Auth();
+                const response = await auth.apiCall('reservations/create', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        room_id: parseInt(roomId),
+                        check_in: checkInDate,
+                        check_out: checkOutDate
+                    })
+                });
+
+                const data = await response.json();
+                Swal.close();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Successful',
+                        text: 'Your booking has been confirmed!',
+                        confirmButtonColor: '#084466',
+                        confirmButtonText: 'View Reservations'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/MaximusHotel/myreservation.html';
+                        } else {
+                            // Reset form
+                            isAvailable = false;
+                            document.getElementById('date-in').value = '';
+                            document.getElementById('date-out').value = '';
+                            document.getElementById('checkAvailabilityBtn').style.display = 'block';
+                            document.getElementById('bookNowBtn').style.display = 'none';
+                        }
+                    });
+                } else {
+                    if (data.message && data.message.includes('profile')) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Complete Profile',
+                            text: data.message,
+                            confirmButtonColor: '#084466',
+                            confirmButtonText: 'Go to Profile'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/MaximusHotel/profile.html';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Booking Failed',
+                            text: data.message || 'An error occurred while processing your booking.',
+                            confirmButtonColor: '#084466'
+                        });
+                    }
+                }
+            } catch (error) {
+                Swal.close();
+                console.error('Error booking room:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Booking Error',
+                    text: 'An error occurred while processing your booking. Please try again later.',
+                    confirmButtonColor: '#084466'
+                });
+            }
+        }
+
+        // Event listeners
+        document.getElementById('checkAvailabilityBtn').addEventListener('click', checkAvailability);
+        document.getElementById('bookNowBtn').addEventListener('click', bookRoom);
+
+        // Function to enable forms with defaults
+        function enableFormsWithDefaults() {
+            const guestSelect = document.getElementById('guest');
+            const roomTypeSelect = document.getElementById('roomType');
+            
+            console.log('Enabling forms with defaults. Guest select exists:', !!guestSelect, 'Room type select exists:', !!roomTypeSelect);
+            
+            if (guestSelect) {
+                guestSelect.innerHTML = '<option value="">Select Guest</option>';
+                guestSelect.disabled = false;
+                console.log('Guest select enabled');
+            }
+            
+            if (roomTypeSelect) {
+                roomTypeSelect.innerHTML = '<option value="">Select Room Type</option>';
+                roomTypeSelect.disabled = false;
+                console.log('Room type select enabled');
+            }
+            
+            // Initialize nice-select
+            if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+                setTimeout(() => {
+                    try {
+                        $('select').niceSelect();
+                        console.log('Nice-select initialized');
+                    } catch (e) {
+                        console.error('Error initializing nice-select:', e);
+                    }
+                }, 100);
+            }
+        }
+
+        // Function to force enable forms (called immediately)
+        function forceEnableForms() {
+            const guestSelect = document.getElementById('guest');
+            const roomTypeSelect = document.getElementById('roomType');
+            
+            if (guestSelect) {
+                guestSelect.innerHTML = '<option value="">Select Guest</option>';
+                guestSelect.removeAttribute('disabled');
+                guestSelect.disabled = false;
+            }
+            
+            if (roomTypeSelect) {
+                roomTypeSelect.innerHTML = '<option value="">Select Room Type</option>';
+                roomTypeSelect.removeAttribute('disabled');
+                roomTypeSelect.disabled = false;
+            }
+        }
+
+        // Initialize on page load
+        $(document).ready(function() {
+            console.log('Page ready, initializing room details...');
+            
+            // Initialize nice-select for all selects
+            if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+                setTimeout(() => {
+                    $('select').niceSelect();
+                }, 200);
+            }
+            
+            // Then try to load room details (this will populate the forms if successful)
+            loadRoomDetails().catch(error => {
+                console.error('Failed to load room details:', error);
+                // Forms are already enabled, so user can still proceed
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+

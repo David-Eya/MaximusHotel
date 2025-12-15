@@ -1,0 +1,128 @@
+<!-- Offcanvas Menu Section Begin -->
+<div class="offcanvas-menu-overlay"></div>
+<div class="canvas-open">
+    <i class="icon_menu"></i>
+</div>
+<div class="offcanvas-menu-wrapper">
+    <div class="canvas-close">
+        <i class="icon_close"></i>
+    </div>
+    <div class="search-icon  search-switch">
+        <i class="icon_search"></i>
+    </div>
+
+    <nav class="mainmenu mobile-menu">
+        <ul>
+            <li><a href="/MaximusHotel/index.html">Home</a></li>
+            <li><a href="/MaximusHotel/rooms.html">Rooms</a></li>
+            <li><a href="/MaximusHotel/about-us.html">About Us</a></li>
+            <li><a href="/MaximusHotel/contact.html">Contact</a></li>
+            <li id="mobileProfile" style="display: none;"><a href="#!" style="display: flex; align-items: center; gap: 8px;">
+                <img id="mobileProfileImage" src="https://hotelmaximus.bytevortexz.com/profile_img/default.jpg" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none;">
+                <i class="fa fa-user-circle" id="mobileProfileIcon" style="font-size: 1.8rem; margin-right: 5px;"></i>Profile
+            </a>
+                <ul class="dropdown">
+                    <li><a href="/MaximusHotel/profile.html">My Profile</a></li>
+                    <li><a href="/MaximusHotel/myreservation.html">My Reservation</a></li>
+                    <li><a href="#" id="mobileLogout">Logout</a></li>
+                </ul>
+            </li>
+            <li id="mobileLogin" style="display: none;"><a href="/MaximusHotel/login.html">Login</a></li>
+            <script>
+                // Immediately check localStorage to prevent flash and set profile image
+                (function() {
+                    const token = localStorage.getItem('auth_token');
+                    const userDataStr = localStorage.getItem('user_data');
+                    const mobileProfile = document.getElementById('mobileProfile');
+                    const mobileLogin = document.getElementById('mobileLogin');
+                    const mobileProfileBottom = document.getElementById('mobileProfileBottom');
+                    const mobileProfileImage = document.getElementById('mobileProfileImage');
+                    const mobileProfileIcon = document.getElementById('mobileProfileIcon');
+                    const mobileProfileBottomImage = document.getElementById('mobileProfileBottomImage');
+                    const mobileProfileBottomIcon = document.getElementById('mobileProfileBottomIcon');
+                    const mobileProfileBottomName = document.getElementById('mobileProfileBottomName');
+                    const mobileProfileBottomEmail = document.getElementById('mobileProfileBottomEmail');
+                    
+                    if (token && userDataStr) {
+                        try {
+                            const userData = JSON.parse(userDataStr);
+                            // User appears to be logged in - show profile, hide login
+                            if (mobileProfile) mobileProfile.style.display = '';
+                            if (mobileLogin) mobileLogin.style.display = 'none';
+                            if (mobileProfileBottom) mobileProfileBottom.style.display = 'block';
+                            
+                            // Set mobile profile image immediately
+                            if (mobileProfileImage && mobileProfileIcon) {
+                                // Hide icon first to prevent flash
+                                mobileProfileIcon.style.display = 'none';
+                                
+                                // Use backend URL for profile images
+                                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                                const imagePath = (userData.image && userData.image.trim() && userData.image !== 'default.jpg') 
+                                    ? `${backendUrl}/profile_img/${userData.image}` 
+                                    : `${backendUrl}/profile_img/default.jpg`;
+                                
+                                mobileProfileImage.src = imagePath;
+                                mobileProfileImage.style.display = 'block';
+                            }
+                            
+                            // Set mobile profile bottom image and info immediately
+                            if (mobileProfileBottomImage && mobileProfileBottomIcon) {
+                                // Hide icon first to prevent flash
+                                mobileProfileBottomIcon.style.display = 'none';
+                                
+                                // Use backend URL for profile images
+                                const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                                const imagePath = (userData.image && userData.image.trim() && userData.image !== 'default.jpg') 
+                                    ? `${backendUrl}/profile_img/${userData.image}` 
+                                    : `${backendUrl}/profile_img/default.jpg`;
+                                
+                                mobileProfileBottomImage.src = imagePath;
+                                mobileProfileBottomImage.style.display = 'block';
+                            }
+                            
+                            // Set name and email
+                            if (mobileProfileBottomName) {
+                                const fullName = `${userData.fname || ''} ${userData.lname || ''}`.trim() || 'User';
+                                mobileProfileBottomName.textContent = fullName;
+                            }
+                            if (mobileProfileBottomEmail) {
+                                mobileProfileBottomEmail.textContent = userData.email || '';
+                            }
+                        } catch (e) {
+                            console.error('Error parsing user data:', e);
+                            // Fallback: show login if parsing fails
+                            if (mobileProfile) mobileProfile.style.display = 'none';
+                            if (mobileLogin) mobileLogin.style.display = '';
+                            if (mobileProfileBottom) mobileProfileBottom.style.display = 'none';
+                        }
+                    } else {
+                        // User not logged in - show login, hide profile
+                        if (mobileProfile) mobileProfile.style.display = 'none';
+                        if (mobileLogin) mobileLogin.style.display = '';
+                        if (mobileProfileBottom) mobileProfileBottom.style.display = 'none';
+                    }
+                })();
+            </script>
+
+        </ul>
+    </nav>
+    <div id="mobile-menu-wrap"></div>
+    
+    <!-- Mobile Profile Section at Bottom -->
+    <div id="mobileProfileBottom" style="display: none; position: absolute; bottom: 20px; left: 0; right: 0; padding: 0 30px; border-top: 1px solid #e5e5e5; padding-top: 20px; margin-top: 20px;">
+        <a href="/MaximusHotel/profile.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #19191a;">
+            <img id="mobileProfileBottomImage" src="https://hotelmaximus.bytevortexz.com/profile_img/default.jpg" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; flex-shrink: 0;">
+            <i class="fa fa-user-circle" id="mobileProfileBottomIcon" style="font-size: 2.5rem; color: #084466; flex-shrink: 0;"></i>
+            <div style="flex: 1; min-width: 0;">
+                <div id="mobileProfileBottomName" style="font-size: 16px; font-weight: 500; color: #19191a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">User Name</div>
+                <div id="mobileProfileBottomEmail" style="font-size: 14px; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">user@email.com</div>
+            </div>
+        </a>
+    </div>
+</div>
+<!-- Offcanvas Menu Section End -->
+
+
+
+

@@ -1,0 +1,115 @@
+<!-- Header Section Begin -->
+<header class="header-section">
+    <div class="menu-item">
+        <div class="container">
+            <div class="row">
+                <style>
+                    /* Media query for screen sizes below 990px */
+                    @media (max-width: 990px) {
+                        .logo img {
+                            width: 35%;
+                            /* Adjust the width as needed */
+                        }
+                    }
+                </style>
+                <div class="col-lg-2">
+                    <div class="logo">
+                        <a href="/MaximusHotel/index.html">
+                            <img src="/MaximusHotel/img/logo.png" alt="">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-10">
+                    <div class="nav-menu">
+                        <nav class="mainmenu">
+                            <ul>
+                                <li><a href="/MaximusHotel/index.html">Home</a></li>
+                                <li><a href="/MaximusHotel/rooms.html">Rooms</a></li>
+                                <li><a href="/MaximusHotel/about-us.html">About Us</a></li>
+                                <li><a href="/MaximusHotel/contact.html">Contact</a></li>
+                                <li id="navProfile" style="display: none;"><a href="#!" style="display: inline-block; padding: 27px 0; margin-right: 42px; line-height: 16px; vertical-align: middle;">
+                                    <img id="navProfileImage" src="https://hotelmaximus.bytevortexz.com/profile_img/default.jpg" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #084466; display: none; vertical-align: middle; margin: 0; padding: 0;">
+                                    <i class="fa fa-user-circle" id="navProfileIcon" style="font-size: 1.8rem; vertical-align: middle; line-height: 16px; margin: 0; padding: 0;"></i>
+                                </a>
+                                    <ul class="dropdown">
+                                        <li><a href="/MaximusHotel/profile.html">My Profile</a></li>
+                                        <li><a href="/MaximusHotel/myreservation.html">My Reservation</a></li>
+                                        <li><a href="#" id="navLogout">Logout</a></li>
+                                    </ul>
+                                </li>
+                                <li id="navLogin" style="display: none;"><a href="/MaximusHotel/login.html">Login</a></li>
+                                <script>
+                                    // Immediately check localStorage to prevent flash and set profile image
+                                    (function() {
+                                        const token = localStorage.getItem('auth_token');
+                                        const userDataStr = localStorage.getItem('user_data');
+                                        const navProfile = document.getElementById('navProfile');
+                                        const navLogin = document.getElementById('navLogin');
+                                        const navProfileImage = document.getElementById('navProfileImage');
+                                        const navProfileIcon = document.getElementById('navProfileIcon');
+                                        
+                                        if (token && userDataStr) {
+                                            try {
+                                                const userData = JSON.parse(userDataStr);
+                                                // User appears to be logged in - show profile, hide login
+                                                if (navProfile) navProfile.style.display = '';
+                                                if (navLogin) navLogin.style.display = 'none';
+                                                
+                                                // Set profile image immediately to prevent icon flash
+                                                if (navProfileImage && navProfileIcon) {
+                                                    // Hide icon first to prevent flash
+                                                    navProfileIcon.style.display = 'none';
+                                                    
+                                                    // Preload image for instant display
+                                                    const img = new Image();
+                                                    // Use backend URL for profile images
+                                                    const backendUrl = 'https://hotelmaximus.bytevortexz.com';
+                                                    const imagePath = (userData.image && userData.image.trim() && userData.image !== 'default.jpg') 
+                                                        ? `${backendUrl}/profile_img/${userData.image}` 
+                                                        : `${backendUrl}/profile_img/default.jpg`;
+                                                    
+                                                    img.onload = function() {
+                                                        navProfileImage.src = imagePath;
+                                                        navProfileImage.style.display = 'block';
+                                                    };
+                                                    img.onerror = function() {
+                                                        // Fallback to default if image fails
+                                                        navProfileImage.src = `${backendUrl}/profile_img/default.jpg`;
+                                                        navProfileImage.style.display = 'block';
+                                                    };
+                                                    img.src = imagePath;
+                                                    
+                                                    // Set src immediately (browser may cache it)
+                                                    navProfileImage.src = imagePath;
+                                                    navProfileImage.style.display = 'block';
+                                                }
+                                            } catch (e) {
+                                                console.error('Error parsing user data:', e);
+                                                // Fallback: show login if parsing fails
+                                                if (navProfile) navProfile.style.display = 'none';
+                                                if (navLogin) navLogin.style.display = '';
+                                            }
+                                        } else {
+                                            // User not logged in - show login, hide profile
+                                            if (navProfile) navProfile.style.display = 'none';
+                                            if (navLogin) navLogin.style.display = '';
+                                        }
+                                    })();
+                                </script>
+                            </ul>
+                        </nav>
+                        <div class="nav-right search-switch">
+                            <i class="icon_search"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Header End -->
+
+
+
+
