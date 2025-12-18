@@ -372,7 +372,7 @@
             
             // Initialize date pickers
             $("#date-in").datepicker({
-                minDate: 0,
+                minDate: 1, // Minimum date is tomorrow (1 = tomorrow, 0 = today)
                 dateFormat: 'dd MM, yy',
                 onSelect: function(selectedDate) {
                     const checkInDate = $(this).datepicker('getDate');

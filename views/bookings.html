@@ -444,9 +444,11 @@
             document.getElementById('guestResults').style.display = 'none';
             document.getElementById('userId').style.display = 'block';
             
-            // Set today's date as minimum for check-in
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('checkIn').setAttribute('min', today);
+            // Set tomorrow's date as minimum for check-in (bookings cannot be made for today)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+            document.getElementById('checkIn').setAttribute('min', tomorrowStr);
             document.getElementById('checkOut').removeAttribute('min'); // Will be set when check-in is selected
             
             // Load users and rooms if not already loaded
