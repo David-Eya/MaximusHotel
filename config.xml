@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.maximushotel.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Maximus Hotel</name>
+    <description>Maximus Hotel Booking App - Book rooms and manage your reservations</description>
+    <author email="dev@maximushotel.com" href="https://hotelmaximus.bytevortexz.com">
+        Maximus Hotel Team
+    </author>
+    <content src="index.html" />
+    
+    <!-- Allow access to all origins (needed for API calls) -->
+    <access origin="*" />
+    
+    <!-- Allow navigation to external URLs -->
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    
+    <!-- Android platform configuration -->
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <!-- No icon specified - will use default Android icon -->
+        <!-- You can add custom icon later: <icon src="www/img/favicon.png" /> -->
+    </platform>
+    
+    <!-- Android preferences -->
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-minSdkVersion" value="22" />
+    <preference name="BackupWebStorage" value="none" />
+    <preference name="Orientation" value="portrait" />
+    
+    <!-- Security: Prevent navigation to external URLs in WebView -->
+    <allow-navigation href="*" />
+</widget>
+
+
+
+
+
