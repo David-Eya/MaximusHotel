@@ -1,0 +1,39 @@
+# Hostinger .htaccess Configuration
+# This file should be placed in the root directory of your Laravel project on Hostinger
+# Rename this file to .htaccess after uploading
+
+# Enable PHP processing
+AddType application/x-httpd-php .php
+
+# Prevent directory listing
+Options -Indexes
+
+# Redirect all requests to public directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirect to public directory if not already there
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /public/$1 [L]
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS Protection
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Prevent MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Protect sensitive files
+<FilesMatch "^(\.env|\.git|composer\.(json|lock)|package\.(json|lock))$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
